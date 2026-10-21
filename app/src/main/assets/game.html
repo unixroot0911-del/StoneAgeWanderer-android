@@ -438,13 +438,14 @@ body{background:var(--moss);color:var(--bone);font-family:var(--f-body)}
       <div><div class="net-kick">LAN · OFFLINE · TRIBE</div><h2>العب على الشبكة المحلية</h2></div>
       <button id="netClose" class="net-x" type="button" aria-label="إغلاق">✕</button>
     </div>
-    <p class="net-sub">الجميع على نفس الواي فاي فقط — بلا إنترنت وبلا حسابات. شخص واحد يضغط <b>استضافة</b> فيمتلك صلاحية <b>ADMIN</b> ويقبل أو يرفض من يريد الدخول، وبقية اللاعبين يضغطون <b>انضمام</b> فقط. والعالم واحد على كل الأجهزة: نفس الأشجار والحجار والحيوانات.</p>
+    <p class="net-sub">الجميع على نفس الواي فاي فقط — بلا إنترنت وبلا حسابات. شخص واحد يضغط <b>استضافة</b> فيمتلك صلاحية <b>ADMIN</b> ويدخل الجميع تلقائيًا بدون موافقة، وبقية اللاعبين يضغطون <b>انضمام</b> فقط. والعالم واحد على كل الأجهزة: نفس الأشجار والحجار والحيوانات.</p>
 
     <label class="net-lab">اسمك في القبيلة<input id="netName" class="net-in" type="text" maxlength="14" placeholder="رَحّال" autocomplete="off" spellcheck="false"></label>
 
     <div id="netStage"></div>
     <div class="net-status" id="netStatus"><i></i><span>غير متصل — اختر طريقة الاتصال</span></div>
     <div class="admin-box" id="adminBox" hidden></div>
+    <div id="netTribeWrap" hidden><div class="admin-h" style="margin:8px 0 6px">القبيلة · اللاعبون</div><div class="plist" id="netTribe"></div></div>
     <p class="net-note">إذا لم يتصل أحد بجهازك: تأكد أن الجهازين على نفس شبكة الواي فاي، وأن جدار حماية ويندوز يسمح للمتصفح على <b>الشبكات الخاصة</b>.</p>
   </div>
 </div>
@@ -3739,7 +3740,7 @@ function netWsOpen(url,asHost){
     const timer=setTimeout(()=>fail('لم يردّ المضيف — تأكد من العنوان ومن أنه شغّل start-LAN.bat'),6000);
     ws.onopen=()=>{
       clearTimeout(timer);
-      netStatus('وصلنا للمضيف — بانتظار الموافقة…','wait');
+      netStatus('وصلنا للمضيف…','wait');
       netOut(JSON.stringify({t:'hi',n:Net.name,ip:location.hostname}));
       if(asHost){Net.role='admin';Net.id='admin-'+Math.random().toString(36).slice(2,6)}
     };
@@ -3768,7 +3769,7 @@ function netWsOpen(url,asHost){
           netUI();netBar();
           res(true);
         }else{
-          Net.waiting=true;netStatus('وصل الطلب — بانتظار موافقة المضيف…','wait');
+          Net.waiting=true;netStatus('جارٍ الانضمام…','wait');
           netOut(JSON.stringify({t:'join',n:Net.name,ip:location.hostname}));
           res(true);
         }
@@ -4574,9 +4575,10 @@ function netStage(){
       '<div class="net-rows">'+
       '<div class="net-row"><div class="ic">@</div><div class="tx"><b>'+
         (Net.host?'أنت المضيف (ADMIN)':'أنت ضيف')+'</b><small>'+
-        (Net.host?'اضغط «قبول» على كل طلب انضمام':'بانتظار موافقة المضيف')+'</small></div></div>'+
+        (Net.host?'اللاعبون يدخلون تلقائيًا — ابدأ العالم متى شئت':'متصل بالمضيف')+'</small></div></div>'+
       '<div id="adminBox" class="admin-box" hidden></div>'+
-      '<div class="net-foot"><button class="net-btn" data-a="play">ابدأ اللعب</button>'+
+      '<div class="net-foot"><button class="net-btn" data-a="play">ابدأ اللعب (Play)</button>'+
+      '<button class="net-btn" data-a="loadsave">تحميل رحلة محفوظة (Load Save)</button>'+
       '<button class="net-btn ghost" data-a="back">قطع الاتصال</button></div>'+
       '</div>';
     netAdmin();
@@ -4584,7 +4586,9 @@ function netStage(){
   }
   st.innerHTML=
     '<div class="net-grid"><button class="net-big host" data-a="auto"><b>بحث تلقائي عن اللعبة</b><small>يجد الأجهزة على نفس الواي فاي ويرسل الدعوة تلقائيًا</small></button></div>'+
-    '<div class="net-foot"><button class="net-btn ghost" data-a="rejoin">أُعيد الاتصال بعالمي</button>'+
+    '<div class="net-foot"><button class="net-btn" data-a="play">ابدأ اللعب (Play)</button>'+
+    '<button class="net-btn" data-a="loadsave">تحميل رحلة محفوظة (Load Save)</button>'+
+    '<button class="net-btn ghost" data-a="rejoin">أُعيد الاتصال بعالمي</button>'+
     '<button class="net-btn ghost" data-a="back">رجوع</button></div>';
 }
 
@@ -4647,7 +4651,7 @@ function netOpen(){
   Net.stage=Net.mode==='rtc'?(Net.stage||'direct'):'menu';netNameGet();
   $('netPanel').hidden=false;
   if(Net.mode==='rtc')netStageDirect();else netStage();
-  netStatus(Net.on?'جلسة نشطة':(Net.waiting?'بانتظار موافقة المضيف…':'غير متصل — اختر طريقة الاتصال'),Net.on?'ok':'');
+  netStatus(Net.on?'جلسة نشطة':(Net.waiting?'جارٍ الانضمام…':'غير متصل — اختر طريقة الاتصال'),Net.on?'ok':'');
   netUI();netAdmin();
 }
 function netPlay(){
@@ -4789,6 +4793,43 @@ function netLinkUpdate(){
 }
 setInterval(()=>{if(Net.panelOpen)netLinkUpdate()},1200);
 $('netPanel').addEventListener('click',e=>{if(e.target.closest('[data-a="auto"]')){_scanBusy=false;netAuto()}});
+
+/* ---------- tribe list inside the LAN window + online/offline tracking + Load Save ---------- */
+Net.known=new Map();
+{const _g=peerGet;peerGet=function(id,name){const p=_g.apply(this,arguments);
+  if(p){const k=Net.known.get(id)||{id:id,col:p.col};k.name=p.name;k.col=p.col;k.online=true;k.since=k.since||Date.now();Net.known.set(id,k)}return p}}
+{const _d=peerDrop;peerDrop=function(id){const had=Net.peers.has(id);_d.apply(this,arguments);
+  if(had){const k=Net.known.get(id);if(k)k.online=false}}}
+{const _t=netTeardown;netTeardown=function(){const r=_t.apply(this,arguments);Net.known.clear();netTribeRender();return r}}
+function netTribeRows(){
+  const rows=[];
+  if(Net.on)rows.push({name:Net.name,me:true,host:Net.host,online:true,col:'#e08a2e'});
+  for(const k of Net.known.values()){const p=Net.peers.get(k.id);
+    rows.push({name:k.name,me:false,host:false,online:!!p&&k.online,col:k.col||'#7acb55',lat:p?p.lat:0})}
+  return rows;
+}
+function netTribeRowHTML(r){
+  return '<div class="pl" style="'+(r.online?'':'opacity:.55')+'">'+
+    '<div class="av" style="background:'+(r.online?r.col:'#777')+'">'+esc((r.name||'?').trim().charAt(0)||'?')+'</div>'+
+    '<div class="nm">'+esc(r.name)+(r.host?'<em>مضيف</em>':'')+(r.me?'<i>(أنت)</i>':'')+'</div>'+
+    '<div class="mt" style="width:auto;font-weight:700;color:'+(r.online?'#8fe36a':'#d9544a')+'">● '+(r.online?'متصل'+(r.lat?' · '+r.lat+'ms':''):'غير متصل')+'</div></div>';
+}
+function netTribeRender(){
+  const w=$('netTribeWrap'),l=$('netTribe');if(!w||!l)return;
+  const rows=netTribeRows();
+  w.hidden=!Net.on;
+  if(Net.on)l.innerHTML=rows.map(netTribeRowHTML).join('')||'';
+}
+{const _u=netUI;netUI=function(){_u.apply(this,arguments);
+  const l=$('peerList');if(l){const off=[...Net.known.values()].filter(k=>!Net.peers.has(k.id));
+    if(off.length)l.insertAdjacentHTML('beforeend',off.map(k=>netTribeRowHTML({name:k.name,online:false,col:k.col})).join(''))}
+  netTribeRender()}}
+setInterval(()=>{if(Net.panelOpen)netTribeRender()},700);
+/* Load Save from the LAN window */
+$('netPanel').addEventListener('click',e=>{const b=e.target.closest('[data-a="loadsave"]');if(!b)return;aInit();if(SFX.ui)SFX.ui();openSavePanel('load')});
+{const st=document.createElement('style');st.textContent='#savePanel{z-index:48!important}';document.head.appendChild(st)}
+{const _r=restoreSnapshot;restoreSnapshot=function(){const r=_r.apply(this,arguments);$('netPanel').hidden=true;Net.panelOpen=false;
+  if(Net.on&&S.alive)setTimeout(()=>{try{banner('تم تحميل الرحلة — القبيلة معك')}catch(e){}},300);return r}}
 /* auto fullscreen on first touch/click */
 function goFull(){const d=document,e=d.documentElement;if(d.fullscreenElement||d.webkitFullscreenElement)return;
 try{const p=(e.requestFullscreen||e.webkitRequestFullscreen||function(){}).call(e,{navigationUI:'hide'});
