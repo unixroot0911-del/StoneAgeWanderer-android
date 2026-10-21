@@ -63,8 +63,8 @@ class Srv{
       JSONObject r=new JSONObject();r.put("t","roster");r.put("i",c.id);r.put("roster",roster());bc(r,c.id);return;}
     if(t.equals("join")){
       if(m.has("n"))c.name=m.optString("n").substring(0,Math.min(14,m.optString("n").length()));
-      if(c.role.equals("admin"))return;c.pend=true;C a=admin();
-      if(a!=null){JSONObject k=new JSONObject();k.put("t","ask");k.put("id",c.id);k.put("n",c.name);k.put("ip",c.ip);sj(a,k);}
+      if(c.role.equals("admin"))return;C a=admin();
+      if(a!=null){c.role="player";c.pend=false;JSONObject j=new JSONObject();j.put("t","joined");j.put("id",c.id);j.put("roster",roster());sj(c,j);bc(j,c.id);}
       else{JSONObject f=new JSONObject();f.put("t","full");f.put("msg","nobody is hosting");sj(c,f);}return;}
     if(t.equals("ok")||t.equals("no")){
       if(!c.role.equals("admin"))return;C g=cl.get(m.optString("id"));if(g==null)return;
