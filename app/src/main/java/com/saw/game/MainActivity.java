@@ -1,12 +1,15 @@
 package com.saw.game;
 import android.app.Activity;import android.os.Bundle;import android.view.*;import android.webkit.*;
 import java.util.concurrent.*;
+import android.net.wifi.WifiManager;
 public class MainActivity extends Activity{
   WebView wv;
+  android.net.wifi.WifiManager.WifiLock wl;
   static class Br{@JavascriptInterface public String ip(){return Srv.ip();}}
   @Override protected void onCreate(Bundle b){
     super.onCreate(b);
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    try{WifiManager wm=(WifiManager)getApplicationContext().getSystemService(WIFI_SERVICE);wl=wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF,"saw");wl.acquire();}catch(Throwable t){}
     CountDownLatch up=new CountDownLatch(1);
     Srv.start(getAssets(),up);
     try{up.await(3,TimeUnit.SECONDS);}catch(Exception e){}

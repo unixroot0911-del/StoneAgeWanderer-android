@@ -16,7 +16,7 @@ class Srv{
   static void readN(InputStream in,byte[] a)throws IOException{int n=0;while(n<a.length){int r=in.read(a,n,a.length-n);if(r<0)throw new EOFException();n+=r;}}
   static byte[] read(InputStream in)throws IOException{ByteArrayOutputStream o=new ByteArrayOutputStream();byte[] b=new byte[8192];int r;while((r=in.read(b))>0)o.write(b,0,r);in.close();return o.toByteArray();}
   static void conn(Socket s,AssetManager am){
-    try{s.setTcpNoDelay(true);InputStream in=new BufferedInputStream(s.getInputStream());OutputStream o=s.getOutputStream();
+    try{s.setTcpNoDelay(true);s.setKeepAlive(true);InputStream in=new BufferedInputStream(s.getInputStream());OutputStream o=s.getOutputStream();
       String req=line(in);if(req==null){s.close();return;}
       String key=null,h;while((h=line(in))!=null&&h.length()>0){if(h.toLowerCase().startsWith("sec-websocket-key:"))key=h.substring(18).trim();}
       if(key!=null){ws(s,in,o,key);return;}
@@ -74,7 +74,7 @@ class Srv{
   }
   static void bye(C c){
     cl.remove(c.id);boolean wasA=c.role.equals("admin");
-    try{JSONObject b=new JSONObject();b.put("t","b");b.put("i",c.id);bc(b,null);
+    try{if(!c.role.equals("guest")){JSONObject b=new JSONObject();b.put("t","b");b.put("i",c.id);bc(b,null);}
       if(wasA){C h=null;for(C x:cl.values())if(x.role.equals("player")){h=x;break;}
         if(h!=null){h.role="admin";JSONObject a=new JSONObject();a.put("t","admin");a.put("roster",roster());sj(h,a);
           JSONObject a2=new JSONObject();a2.put("t","admin");a2.put("id",h.id);a2.put("roster",roster());bc(a2,h.id);}}}catch(Exception e){}

@@ -428,6 +428,7 @@ body{background:var(--moss);color:var(--bone);font-family:var(--f-body)}
 </div>
 <div id="savePanel" hidden><div class="save-shell" dir="rtl" lang="ar"><div class="save-head"><h2 id="saveTitle">حفظ وتحميل الرحلات</h2><button id="saveClose" type="button">إغلاق ✕</button></div><p class="save-sub">ثلاث خانات للحفظ اليدوي وخانة للحفظ التلقائي · صور من عالمك</p><div class="save-grid" id="saveGrid"></div><div class="save-foot">تُخزّن ملفات الحفظ محلياً في هذا المتصفح على هذا الجهاز. مسح بيانات المتصفح قد يحذفها.</div></div></div>
 <div id="pauseMenu" hidden><div class="pause-shell" dir="rtl" lang="ar"><div class="pause-kicker">CAMP • REST • SURVIVE</div><h2>استراحة المسافر</h2><p>خذ نفسًا، رتّب أمتعتك، واحفظ رحلتك قبل العودة إلى البرية.</p><div class="pause-actions"><button id="resumeBtn" type="button">متابعة اللعب</button><button id="pauseSaveBtn" type="button">حفظ الرحلة</button><button id="pauseMainBtn" type="button">العودة للقائمة الرئيسية</button></div></div></div>
+<canvas id="mmap" width="132" height="132" hidden aria-label="الخريطة المصغرة"></canvas>
 <div id="netBar" hidden><i class="dot"></i><span class="tx">القبيلة</span><span class="pg"></span></div>
 <div id="netFeed" hidden></div>
 <div id="down" hidden><div class="dt">أنت تنزف… انتظر من يُنقذك</div><div class="db"><b></b></div></div>
@@ -1161,6 +1162,7 @@ const IT={
   cloak:{n:'عباءة فرو',d:'تدفئك وتخفف الضرر قليلاً.',wear:1},
   fur_coat:{n:'معطف جلدي',d:'دفء ودرع أقوى بكثير.',wear:2},
   backpack:{n:'حقيبة ظهر',d:'تزيد مساحة الحقيبة 10 خانات.',use:'pack'},
+  mapbook:{n:'كتاب الخريطة',d:'كتاب يرسم لك ما حولك. افتحه لتظهر الخريطة المصغرة، واضغط عليها لإغلاقها.',use:'map'},
   torch:{n:'مشعل',d:'أشعله من نار مضرمة. يضيء ويخيف الذئاب.',use:'torch'},
   firewood:{n:'حزمة حطب',d:'تضعها فتجهز موقد النار. ثم أشعلها بحشيش وصوّان.',place:'campfire'},
   bench_kit:{n:'طاولة صناعة',d:'تضعها لتصنع الأدوات والملابس والبناء المتقدم.',place:'bench'},
@@ -1203,7 +1205,8 @@ const REC=[
   {out:'shelter_kit',n:1,in:{plank:4,stick:6,hide:2,rope:3},st:'bench',cat:'build',t:9,snd:'tap'},
   {out:'cloak',n:1,in:{hide:4,rope:2},tool:'needle',st:'bench',cat:'gear',t:6,snd:'rope'},
   {out:'fur_coat',n:1,in:{leather:4,hide:2,rope:2},tool:'needle',st:'bench',cat:'gear',t:8,snd:'rope'},
-  {out:'backpack',n:1,in:{leather:3,rope:3},tool:'needle',st:'bench',cat:'gear',t:7,snd:'rope'}
+  {out:'backpack',n:1,in:{leather:3,rope:3},tool:'needle',st:'bench',cat:'gear',t:7,snd:'rope'},
+  {out:'mapbook',n:1,in:{hide:1,rope:1,stick:1},st:'hand',cat:'tool',t:4,snd:'rope'}
 ];
 const TABS=[['mat','مواد'],['tool','أدوات'],['build','بناء'],['gear','ملابس']];
 let recTab='mat';
@@ -1274,6 +1277,8 @@ IC.spoiled=g=>{IC.raw_meat(g);g.fillStyle='rgba(90,130,50,.55)';g.beginPath();g.
 IC.fur_coat=g=>{IC.cloak(g);g.fillStyle='rgba(60,30,10,.45)';g.beginPath();g.moveTo(7,12);g.quadraticCurveTo(20,5,33,12);g.lineTo(33,19);g.lineTo(7,19);g.fill();g.fillStyle='#efe3c8';for(let i=0;i<5;i++){g.beginPath();g.arc(9+i*5.5,12+Math.abs(Math.sin(i))*1.5,2.4,0,TAU);g.fill()}};
 IC.backpack=g=>{g.beginPath();g.moveTo(9,12);g.quadraticCurveTo(20,3,31,12);g.lineTo(33,32);g.quadraticCurveTo(20,37,7,32);g.closePath();fs(g,'#a8764a');g.beginPath();g.roundRect(13,20,14,10,3);fs(g,'#8a5a2e',1.8);line(g,[[10,14],[10,32]],2,'#5b3a1c');line(g,[[30,14],[30,32]],2,'#5b3a1c')};
 IC.waterskin_clean=g=>{IC.waterskin(g);g.beginPath();g.moveTo(20,17);g.quadraticCurveTo(14,25,20,30);g.quadraticCurveTo(26,25,20,17);g.closePath();fs(g,'#9fe0ff',1.6)};
+IC.mapbook=g=>{g.beginPath();g.roundRect(8,7,24,27,3);fs(g,'#7a4a24',2.4);g.beginPath();g.roundRect(11,9,19,23,2);fs(g,'#efe0b8',1.6);
+  line(g,[[14,16],[19,13],[23,18],[27,15]],1.4,'#5a7a3a');line(g,[[14,24],[20,21],[26,26]],1.4,'#3a7a9a');g.fillStyle='#c0392b';g.beginPath();g.arc(22,20,2,0,TAU);g.fill();line(g,[[9,9],[9,32]],2.4,'#5b3216')};
 const iconCache={};
 function iconURL(id){
   if(iconCache[id])return iconCache[id];
@@ -1359,6 +1364,7 @@ function useSlot(i){
     invDirty=true;renderInv();return;
   }
   if(d.wear){if(S.cloak>=d.wear){toast('ترتدي ما هو أفضل بالفعل');return}s.n--;if(s.n<=0)inv[i]=null;S.cloak=d.wear;S.flag['wear'+d.wear]=1;SFX.pop();toast('ارتديت '+d.n);invDirty=true;renderInv();return}
+  if(d.use==='map'){closeInv();mapToggle();SFX.pop();return}
   if(d.use==='pack'){s.n--;if(s.n<=0)inv[i]=null;S.pack=1;setInvSize(25);SFX.pop();toast('+10 خانات');renderInv();return}
   if(d.use==='torch'){
     const nf=nearFireDist();
@@ -1400,6 +1406,7 @@ function renderInv(){
     else if(d.wear)act+='<button class="btn" data-a="use">ارتدِ</button>';
     else if(d.use==='torch')act+='<button class="btn" data-a="use">أشعل</button>';
     else if(d.use==='pack')act+='<button class="btn" data-a="use">ارتدِ</button>';
+    else if(d.use==='map')act+='<button class="btn" data-a="use">افتح الخريطة</button>';
     else if(d.place)act+='<button class="btn" data-a="use">ضع</button>';
     act+='<button class="btn alt" data-a="drop">ارمِ</button>';
     info.innerHTML='<div class="t">'+d.n+(s.n>1?' ×'+s.n:'')+'</div><div>'+d.d+'</div><div class="row">'+act+'</div>';
@@ -3748,13 +3755,14 @@ function netWsOpen(url,asHost){
       let m;try{m=JSON.parse(e.data)}catch(_){return}
       /* control messages from the host have no sender id — handle them here */
       if(m.t==='ask'){if(settled)netAskAdd(m.id,m.n,m.ip);return}
+      if(m.t==='admin'){if(!m.id){Net.role='admin';Net.host=true;Net.waiting=false;netStatus('أصبحت المضيف','ok');netUI();netBar()}return}
       if(m.t==='denied'){netStatus('رفض المضيف طلبك','bad');netFeed('رُفض طلب الانضمام','bad');return}
       if(m.t==='full'){if(!settled)fail('لا يوجد مضيف متصل الآن');else netStatus('لا يوجد مضيف متصل','bad');return}
-      if(m.t==='joined'&&settled&&!asHost){
+      if(m.t==='joined'&&settled&&!asHost&&Net.waiting&&!Net.host){
         Net.role='player';Net.waiting=false;Net.host=false;Net.ready=true;Net.id=m.id||Net.id;
         netClaimWorld();
         netStatus('تمت الموافقة! انضممت إلى القبيلة','ok');
-        netUI();netBar();
+        netUI();netBar();netStartTimers();
         if(m.roster)for(const r of m.roster)if(r.id!==Net.id)peerGet(r.id,r.n);
         return;
       }
@@ -3779,7 +3787,7 @@ function netWsOpen(url,asHost){
         Net.role='player';Net.waiting=false;Net.host=false;Net.ready=true;Net.id=m.id||Net.id;
         netClaimWorld();
         netStatus('تمت الموافقة! انضممت إلى القبيلة','ok');
-        netUI();netBar();
+        netUI();netBar();netStartTimers();
         for(const r of (m.roster||[]))if(r.id!==Net.id)peerGet(r.id,r.n);
         res(true);
         netRecvLater(e.data);
@@ -3788,7 +3796,7 @@ function netWsOpen(url,asHost){
       }
     };
     ws.onerror=()=>fail('تعذّر الوصول — تأكد أن الجهازين على نفس الواي فاي وأن الخادم يعمل');
-    ws.onclose=()=>{clearTimeout(timer);if(!settled)fail('انقطع الاتصال بالمضيف');else if(Net.on)netLost('أُغلق الاتصال بالمضيف')};
+    ws.onclose=()=>{clearTimeout(timer);if(!settled)fail('انقطع الاتصال بالمضيف');else if(Net.on&&Net.ws===ws)netWsRecover('أُغلق الاتصال بالمضيف')};
   });
 }
 function netRecvLater(data){
@@ -3995,6 +4003,7 @@ function netPush(){
 }
 function netHandle(m){
   if(!Net.ready)return;
+  if(m.t==='b'&&!Net.peers.has(m.i))return;
   const p=peerGet(m.i,m.n);
   p.last=performance.now()/1000;
   if(!p)return;
@@ -4005,7 +4014,7 @@ function netHandle(m){
       break;
     case 'b':
       peerDrop(m.i,'bye');
-      if(!Net.peers.size)netLost('غادرَ المضيف الغرفة');
+      if(!Net.peers.size&&Net.mode!=='ws')netLost('غادرَ المضيف الغرفة');
       else{netFeed(p.name+' غادر القبيلة','bad');netPromote()}
       break;
     case 's':
@@ -4294,7 +4303,7 @@ function netUpdate(dt,dtRaw){
     netRig(p,dt);
     if(p.msgT>-8&&time-p.msgT>6)p.msg=null;
     if(p.sigT>-8&&time-p.sigT>7)p.sig=null;
-    if(now-p.last>15){peerDrop(p.id,'timeout');netFeed(p.name+' انقطع اتصاله','bad')}
+    if(now-p.last>(Load.on||document.hidden?1e9:45)){peerDrop(p.id,'timeout');netFeed(p.name+' انقطع اتصاله','bad')}
   }
   /* position/fire/wildlife sends now run on their own wall-clock timers (below),
      so a slow frame on the host can no longer stutter everyone else's view */
@@ -4575,10 +4584,10 @@ function netStage(){
       '<div class="net-rows">'+
       '<div class="net-row"><div class="ic">@</div><div class="tx"><b>'+
         (Net.host?'أنت المضيف (ADMIN)':'أنت ضيف')+'</b><small>'+
-        (Net.host?'اللاعبون يدخلون تلقائيًا — ابدأ العالم متى شئت':'متصل بالمضيف')+'</small></div></div>'+
+        (Net.host?'اللاعبون يدخلون تلقائيًا — ابدأ العالم متى شئت':'متصل — ستدخل العالم تلقائيًا فور أن يبدأه المضيف')+'</small></div></div>'+
       '<div id="adminBox" class="admin-box" hidden></div>'+
-      '<div class="net-foot"><button class="net-btn" data-a="play">ابدأ اللعب (Play)</button>'+
-      '<button class="net-btn" data-a="loadsave">تحميل رحلة محفوظة (Load Save)</button>'+
+      '<div class="net-foot">'+(Net.host?'<button class="net-btn" data-a="play">ابدأ اللعب (Play)</button>'+
+      '<button class="net-btn" data-a="loadsave">تحميل رحلة محفوظة (Load Save)</button>':'')+
       '<button class="net-btn ghost" data-a="back">قطع الاتصال</button></div>'+
       '</div>';
     netAdmin();
@@ -4830,6 +4839,122 @@ $('netPanel').addEventListener('click',e=>{const b=e.target.closest('[data-a="lo
 {const st=document.createElement('style');st.textContent='#savePanel{z-index:48!important}';document.head.appendChild(st)}
 {const _r=restoreSnapshot;restoreSnapshot=function(){const r=_r.apply(this,arguments);$('netPanel').hidden=true;Net.panelOpen=false;
   if(Net.on&&S.alive)setTimeout(()=>{try{banner('تم تحميل الرحلة — القبيلة معك')}catch(e){}},300);return r}}
+
+/* ---------- host starts the world -> guests enter at the same moment ---------- */
+function netWorldIsRunning(){return S.alive&&P.state!=='hidden'&&$('splash').hidden}
+function netWorldSnap(){
+  const ch=[];
+  for(const [key,c] of chunks){const a=[];
+    c.objs.forEach((o,i)=>{if(o.cut||o.fruit||(o.maxhp&&o.hp<o.maxhp))a.push([i,{cut:o.cut,cutAt:o.cutAt,hp:o.hp,fruit:o.fruit,fruitT:o.fruitT}])});
+    if(a.length)ch.push([key,a])}
+  return {px:P.x,py:P.y,time:time,tod:tod,rain:rain,rainGoal:rainGoal,rainT:rainT,seas:seas,snowK:snowK,wind:wind,day:S.day,
+    structs:saveClone(structs),fires:saveClone(fires),drops:saveClone(drops),chunks:ch};
+}
+function netApplyWorld(w){
+  time=w.time;tod=w.tod;rain=w.rain;rainGoal=w.rainGoal;rainT=w.rainT;seas=w.seas;snowK=w.snowK;wind=w.wind;S.day=w.day;
+  structs.length=0;(w.structs||[]).forEach(e=>{e.own=false;structs.push(e)});
+  fires.length=0;(w.fires||[]).forEach(e=>{e.own=false;fires.push(e)});
+  drops.length=0;(w.drops||[]).forEach(e=>drops.push(e));
+  for(const [key,list] of (w.chunks||[])){const ch=chunks.get(key);if(!ch)continue;
+    list.forEach(it=>{const t=ch.objs[it[0]];if(!t)return;Object.assign(t,it[1]);
+      if(t.k===3&&SPR.bush[t.fruit?1:0])t.sp=SPR.bush[t.fruit?1:0][t.vi]})}
+}
+function netTeleportTo(px,py){
+  let x=px+1.6,y=py+1.6;
+  if(waterAt(x,y)===2||!freeSpot(x,y,.4)){x=px-1.6;y=py+1.6}
+  P.x=x;P.y=y;P.vx=P.vy=0;cam.wx=x;cam.wy=y;S.sx=x;S.sy=y;trail.length=0;prints.length=0;
+}
+function netBroadcastStart(withWorld){
+  if(!Net.on||!Net.host)return;
+  let w=null;if(withWorld){try{w=netWorldSnap()}catch(e){w=null}}
+  netSend('start',{w:w});
+}
+function netGuestStart(m){
+  if(Net.host||Load.on||netWorldIsRunning())return;
+  const w=m.w||null;
+  menuShotClear();
+  $('netPanel').hidden=true;Net.panelOpen=false;$('roster').hidden=true;Net.rosterOpen=false;
+  aInit();userPaused=false;$('pauseMenu').hidden=true;$('savePanel').hidden=true;$('splash').hidden=true;
+  loadOpen('دخول عالم القبيلة…','نلتحق بالمضيف…');
+  loadAdd(()=>{P.dropTries=0;newGame();if(w){try{netApplyWorld(w)}catch(e){}netTeleportTo(w.px,w.py)}else netSpawnNear()},12,'ندبّر الأرض…');
+  loadWorld(w?w.px:P.x,w?w.py:P.y,14,78);
+  if(w)loadAdd(()=>{try{netApplyWorld(w)}catch(e){}},80,'نستعيد عالم المضيف…');
+  loadWait(60,92,'نشعل النار حولنا…');
+  loadFinish(()=>banner('معًا في البرية'));
+}
+{const _h=netHandle;netHandle=function(m){
+  if(m&&m.t==='start'){if(Net.ready)netGuestStart(m);return}
+  return _h.apply(this,arguments)}}
+{const _p=netPlay;netPlay=function(){_p.apply(this,arguments);if(Net.on&&Net.host)netBroadcastStart(false)}}
+{const _n=newGame;newGame=function(){_n.apply(this,arguments);P.dropTries=0;try{addItem('mapbook',1)}catch(e){}}}
+{const _r2=restoreSnapshot;restoreSnapshot=function(){const r=_r2.apply(this,arguments);
+  if(Net.on&&Net.host){P.dropTries=0;netBroadcastStart(true)}return r}}
+{const _g2=peerGet;peerGet=function(id){const was=Net.known.get(id);const p=_g2.apply(this,arguments);
+  if(p&&(!was||!was.online)&&Net.host&&netWorldIsRunning())setTimeout(()=>{if(Net.host&&netWorldIsRunning())netBroadcastStart(true)},900);
+  return p}}
+/* show Play/Load only to the host: re-render the stage when the role changes */
+setInterval(()=>{if(!Net.panelOpen||Net.mode==='rtc')return;const k=Net.on?(Net.host?'h':'g'):'o';
+  if(Net._sk!==k){Net._sk=k;netStage()}},500);
+/* ---------- automatic reconnect instead of dropping the session ---------- */
+async function netWsRecover(why){
+  if(Net.recov)return;Net.recov=true;Net.recovCancel=false;
+  const url=Net.ws&&Net.ws.url;
+  netStatus('انقطع الاتصال — نعيد المحاولة…','wait');toast('انقطع الاتصال — نعيد المحاولة…',true);
+  let ok=false;
+  for(let i=0;i<20&&url&&!Net.recovCancel;i++){
+    await new Promise(r=>setTimeout(r,1500));
+    if(Net.recovCancel)break;
+    netTeardown(true);
+    try{ok=await netWsOpen(url,false)}catch(e){ok=false}
+    if(ok&&Net.on)break;
+  }
+  Net.recov=false;
+  if(ok&&Net.on){netStatus('عاد الاتصال','ok');toast('عاد الاتصال');netUI();netBar();return}
+  if(!Net.recovCancel){Net.on=true;netLost(why)}
+}
+{const _t2=netTeardown;netTeardown=function(silent){if(!silent)Net.recovCancel=true;return _t2.apply(this,arguments)}}
+/* ---------- minimap book ---------- */
+let mapOn=false;
+const mm=$('mmap'),mmg=mm.getContext('2d'),mmSrc=document.createElement('canvas');
+{const dpr=Math.min(2,window.devicePixelRatio||1);mm.width=mm.height=Math.round(132*dpr);mmSrc.width=mmSrc.height=40}
+{const st=document.createElement('style');st.textContent='#mmap{position:fixed;right:10px;top:98px;width:132px;height:132px;z-index:20;border-radius:14px;border:2px solid #5b3216;box-shadow:0 3px 12px #0009,inset 0 0 0 2px #efe0b855;background:#efe0b8;touch-action:manipulation}@media(max-height:400px){#mmap{width:110px;height:110px;top:94px}}';document.head.appendChild(st)}
+function mapToggle(){mapOn=!mapOn;mm.hidden=!mapOn;if(mapOn){mmT=0;mapDraw()}}
+mm.addEventListener('click',()=>{mapOn=false;mm.hidden=true;if(SFX.ui)SFX.ui()});
+let mmT=0;const MM_N=40,MM_SPAN=130;
+function mapColor(x,y){
+  const t=tile(Math.floor(x),Math.floor(y));
+  if(t.w)return t.w===2?[44,95,125]:[79,147,170];
+  if(t.sand)return[216,196,138];
+  const b=biome(x,y);
+  if(b.rocky>.55)return[140,136,126];
+  if(b.forest>.55)return[44,92,48];
+  if(b.meadow>.4)return[132,176,76];
+  return[88,140,64];
+}
+function mapDraw(){
+  if(!mapOn)return;
+  const vis=S.alive&&P.state!=='hidden'&&$('splash').hidden;
+  mm.hidden=!vis;if(!vis)return;
+  const c=mmSrc.getContext('2d'),im=c.createImageData(MM_N,MM_N),cell=MM_SPAN/MM_N;
+  for(let j=0;j<MM_N;j++)for(let i=0;i<MM_N;i++){
+    const wx=P.x+(i-MM_N/2+.5)*cell,wy=P.y+(j-MM_N/2+.5)*cell,col=mapColor(wx,wy),k=(j*MM_N+i)*4;
+    im.data[k]=col[0];im.data[k+1]=col[1];im.data[k+2]=col[2];im.data[k+3]=255}
+  c.putImageData(im,0,0);
+  const W=mm.width,sc=W/MM_SPAN;
+  mmg.clearRect(0,0,W,W);mmg.imageSmoothingEnabled=true;mmg.drawImage(mmSrc,0,0,W,W);
+  const px=(x)=>W/2+(x-P.x)*sc,py=(y)=>W/2+(y-P.y)*sc;
+  mmg.fillStyle='#d9701c';for(const f of fires){if(Math.abs(f.x-P.x)>MM_SPAN/2||Math.abs(f.y-P.y)>MM_SPAN/2)continue;mmg.beginPath();mmg.arc(px(f.x),py(f.y),3*sc/1.6,0,6.283);mmg.fill()}
+  mmg.fillStyle='#5b3216';for(const q of structs){if(Math.abs(q.x-P.x)>MM_SPAN/2||Math.abs(q.y-P.y)>MM_SPAN/2)continue;const r=2.6*sc/1.6;mmg.fillRect(px(q.x)-r,py(q.y)-r,r*2,r*2)}
+  if(Net.on)for(const q of Net.peers.values()){const x=px(q.rx),y=py(q.ry);if(x<0||y<0||x>W||y>W)continue;
+    mmg.beginPath();mmg.arc(x,y,4*sc/1.6,0,6.283);mmg.fillStyle=q.col||'#4aa3d9';mmg.fill();mmg.lineWidth=1.5;mmg.strokeStyle='#fff';mmg.stroke()}
+  mmg.save();mmg.translate(W/2,W/2);mmg.rotate((P.face||0)+Math.PI/2);
+  mmg.beginPath();const a=6*sc/1.6;mmg.moveTo(0,-a*1.2);mmg.lineTo(a*.8,a);mmg.lineTo(0,a*.45);mmg.lineTo(-a*.8,a);mmg.closePath();
+  mmg.fillStyle='#fff';mmg.fill();mmg.lineWidth=1.6;mmg.strokeStyle='#2b180d';mmg.stroke();mmg.restore();
+  mmg.fillStyle='#2b180d';mmg.font='bold '+Math.round(11*sc/1.6)+'px sans-serif';mmg.textAlign='center';mmg.fillText('N',W/2,12*sc/1.6);
+}
+setInterval(()=>{if(mapOn)mapDraw()},450);
+{const _s=netSend;netSend=function(t,d){if(t==='ping')d=Object.assign({n:Net.name},d||{});return _s.call(this,t,d)}}
+function netPromote(){}
 /* auto fullscreen on first touch/click */
 function goFull(){const d=document,e=d.documentElement;if(d.fullscreenElement||d.webkitFullscreenElement)return;
 try{const p=(e.requestFullscreen||e.webkitRequestFullscreen||function(){}).call(e,{navigationUI:'hide'});
@@ -4877,8 +5002,8 @@ $('quickChat').addEventListener('click',e=>{
 });
 $('netName').addEventListener('input',netNameGet);
 try{const n=(localStorage.getItem('sa-net-name')||'').slice(0,14);if(n)$('netName').value=n;Net.name=n||Net.name}catch(e){}
-window.addEventListener('pagehide',()=>{if(Net.on){try{netSend('b',{})}catch(e){}}});
-window.addEventListener('beforeunload',()=>{if(Net.on){try{netSend('b',{})}catch(e){}}});
+window.addEventListener('pagehide',()=>{if(Net.on&&Net.mode!=='ws'){try{netSend('b',{})}catch(e){}}});
+window.addEventListener('beforeunload',()=>{if(Net.on&&Net.mode!=='ws'){try{netSend('b',{})}catch(e){}}});
 /* ---------- network senders: wall-clock, not frame-clock ---------- */
 function netStartTimers(){
   clearInterval(Net.tA);clearInterval(Net.tB);clearInterval(Net.tC);
