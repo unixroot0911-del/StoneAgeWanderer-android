@@ -21,3 +21,10 @@
 - Known: loom placement failed in a test once due to blocked spot (not a bug). Multiplayer regression: both clients reach live state.
 
 ## v3.1: crafting ONLY at stations (dev/v3d.js). Inventory = read-only recipe guide; near a station the 'اصنع' action opens that station's recipes. Hand-only: rope, flint_blade, firewood, bench_kit.
+
+## v3.2 stations rework (dev/v3d.js rebuilds REC fully)
+- Hand (inventory) crafts: rope, flint_blade(minigame), bandage, torch, firewood(campfire kit) + ALL station kits. Everything else at stations.
+- Stations: bench, carp, kiln, smelter, forge, grill, oven, smoker, tanner, loom, anvil(stone workshop), filter, lab, mill, farm, bed. Fuel stations (kiln/oven/smoker/smelter/forge/grill) take wood/charcoal; recipes with bg:1 run in background queue (s.q) and drop output beside station. Forge is manual with fuel.
+- Ores drop from rocks (oreDrop); seeds from herbs; farm struct plants/harvests by season. Metal weapons map to draw kinds via wk().
+- Audio: latencyHint playback, master .5, limiter-ish compressor, shorter reverb, voice limiter wrappers on N/O/F/R.
+- Open question list for user: more stations/realism, water rendering, ice, chests.

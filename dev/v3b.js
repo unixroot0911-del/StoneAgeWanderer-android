@@ -152,7 +152,7 @@ function drawStn(o){
   }
   ctx.restore();
 }
-{const _ds=drawStruct;drawStruct=function(o){if(STN[o.kind])return drawStn(o);return _ds(o)}}
+{const _ds=drawStruct;drawStruct=function(o){if(STN[o.kind]&&o.kind!=='bench')return drawStn(o);return _ds(o)}}
 /* hot stations emit smoke */
 {const _us=updStructs;updStructs=function(dt){_us.apply(this,arguments);
   for(const s of structs){if(s.hot>0){s.hot-=dt;if(Math.random()<dt*5)emit('puff',s.x+(Math.random()-.5)*.3,s.y,1.6,{col:'rgba(120,110,100,.5)',size:4,vx:.2,vy:-.1})}}
