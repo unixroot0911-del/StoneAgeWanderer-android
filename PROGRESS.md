@@ -28,3 +28,5 @@
 - Ores drop from rocks (oreDrop); seeds from herbs; farm struct plants/harvests by season. Metal weapons map to draw kinds via wk().
 - Audio: latencyHint playback, master .5, limiter-ish compressor, shorter reverb, voice limiter wrappers on N/O/F/R.
 - Open question list for user: more stations/realism, water rendering, ice, chests.
+
+## v3.3 (dev/v3e.js): station tools (hammer/saw/tongs/mortar from workbench), 13 new foods, water look (depth shade, ripples, shore foam), winter ice (shallow water freezes -> walkable). Frame errors show as console 'c:[game] frame error' in tests — check those.
