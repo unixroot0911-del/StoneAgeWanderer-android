@@ -8,3 +8,5 @@
 - Added mapbook item (starting inventory + recipe) opening minimap (#mmap).
 - Tested with headless Chromium + node ws relay (two clients). Java changes only compiled by CI.
 - Next: test on real devices.
+- Fauna update: source in dev/fauna_art.js + dev/fauna_sys.js; run `python3 dev/inject.py` to (re)inject into app/src/main/assets/game.html (idempotent, between /*FAUNA_BEGIN*/ and /*FAUNA_END*/ plus a few one-line source patches).
+- Tested headless (Chromium): all species render, AI works, taming->ally->fights, XP/level, journal. Multiplayer mirror of new species verified.
