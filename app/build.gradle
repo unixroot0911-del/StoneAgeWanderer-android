@@ -1,4 +1,7 @@
 plugins{id 'com.android.application'}
+def runNo = (System.getenv('GITHUB_RUN_NUMBER') ?: '1').toInteger()
 android{namespace 'com.saw.game';compileSdk 34
- defaultConfig{applicationId 'com.saw.game';minSdk 24;targetSdk 34;versionCode 1;versionName '1.0'}
+ defaultConfig{applicationId 'com.saw.game';minSdk 24;targetSdk 34;versionCode 100 + runNo;versionName '3.' + runNo}
+ signingConfigs{saw{storeFile file('saw.keystore');storePassword 'sawgame123';keyAlias 'saw';keyPassword 'sawgame123'}}
+ buildTypes{debug{signingConfig signingConfigs.saw}}
  compileOptions{sourceCompatibility JavaVersion.VERSION_17;targetCompatibility JavaVersion.VERSION_17}}
