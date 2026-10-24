@@ -14,13 +14,24 @@ else:
     m='/* auto fullscreen on first touch/click */'
     assert s.count(m)==1
     s=s.replace(m,block+m)
+
+# ---- V3 block (after FAUNA) ----
+v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js'))
+V1,V2='/*V3_BEGIN*/','/*V3_END*/'
+vblock=V1+'\n'+v3+V2+'\n'
+if V1 in s:
+    s=re.sub(re.escape(V1)+r'.*?'+re.escape(V2)+r'\n',lambda m:vblock,s,flags=re.S)
+else:
+    assert s.count(E+'\n')==1
+    s=s.replace(E+'\n',E+'\n'+vblock)
 def patch(old,new):
     global s
     if new in s: return
+    if s.count(old)==0:
+        print('WARN skipped (already patched?):',old[:50]);return
     assert s.count(old)==1,(old[:60],s.count(old))
     s=s.replace(old,new)
 patch("W.dmg*(slam?1.6:1)*(.9+Math.random()*.2)","W.dmg*dmgMul()*(slam?1.6:1)*(.9+Math.random()*.2)")
-patch("if(P.inWater)tsp*=.65;","if(P.inWater)tsp*=.65;tsp*=spdMul();")
 patch("big=['deer','boar','wolf','bear','mammoth']","big=['deer','boar','wolf','bear','mammoth','sabertooth','bison']")
 patch("l.push([e.nid,e.sp[0],","l.push([e.nid,ENTK[e.sp]||e.sp[0],")
 patch("S.flag.crafted=1;SFX.done();","S.flag.crafted=1;xpGain((r.cat==='tool'||r.cat==='gear')?9:4);SFX.done();")
@@ -28,5 +39,34 @@ patch("  if(d.use==='map'){closeInv();mapToggle();SFX.pop();return}","  if(d.use
 patch("""    else if(d.use==='map')act+='<button class="btn" data-a="use">افتح الخريطة</button>';""","""    else if(d.use==='map')act+='<button class="btn" data-a="use">افتح الخريطة</button>';
     else if(d.use==='charm')act+='<button class="btn" data-a="use">ارتدِ</button>';""")
 patch("  if(Net.on)for(const q of Net.peers.values()){const x=px(q.rx)","  for(const q of ents){if(q.ally&&!q.dead){mmg.beginPath();mmg.arc(px(q.x),py(q.y),3.4*sc/1.6,0,6.283);mmg.fillStyle='#d6453a';mmg.fill();mmg.lineWidth=1.3;mmg.strokeStyle='#fff';mmg.stroke()}}\n  if(Net.on)for(const q of Net.peers.values()){const x=px(q.rx)")
+
+# ---- V3 patches ----
+patch("else if(!P.air&&P.atk.n===0)S.stam=Math.min(stCap","else if(!P.air&&P.atk.n===0&&!P.swim)S.stam=Math.min(stCap")
+if "  let target=100-night*70" in s:
+    a=s.index("  let target=100-night*70");b=s.index("  if(S.torchT>0)S.torchT-=dt;")
+    s=s[:a]+"  bodyStep(dt,nf,sh,tribe,run);\n"+s[b:]
+patch("(seas===1?.05:0))*sl);","(seas===1?.05:0))*sl*thirstK());")
+patch("S.hunger=Math.max(0,S.hunger-dt*(.095+","S.hunger=Math.max(0,S.hunger-dt*(.115+")
+patch("S.thirst-dt*(.14+.05*(1-night)","S.thirst-dt*(.17+.05*(1-night)")
+patch("    if(waterAt(nx,P.y)!==2)P.x=nx;else P.vx=0;\n    if(waterAt(P.x,ny)!==2)P.y=ny;else P.vy=0;\n    P.inWater=waterAt(P.x,P.y)===1?1:0;","    P.x=nx;P.y=ny;\n    P.wd=wdep(P.x,P.y);P.swim=P.wd>.85?1:0;P.inWater=P.wd>.12?1:0;")
+patch("if(P.inWater)tsp*=.65;tsp*=spdMul();","if(P.swim)tsp*=.55;else if(P.inWater)tsp*=1-.5*(P.wd||0);tsp*=spdMul()*envSpd();")
+patch("run=inp.m>.88&&!S.exh&&A.n===0&&!P.air;","run=inp.m>.88&&!S.exh&&A.n===0&&!P.air&&!P.swim;")
+patch("function moveEnt(e,dt){\n  const nx=e.x+e.vx*dt,ny=e.y+e.vy*dt;","function moveEnt(e,dt){\n  const wm=entWater(e,dt),nx=e.x+e.vx*dt*wm,ny=e.y+e.vy*dt*wm;")
+patch("  if(waterAt(nx,e.y)!==2)e.x=nx;else e.vx*=-.3;\n  if(waterAt(e.x,ny)!==2)e.y=ny;else e.vy*=-.3;","  e.x=nx;e.y=ny;")
+patch("time-o.cutAt>=rg)reviveObj","time-o.cutAt>=rg*regK(o))reviveObj")
+patch("time-o.fruitT>(seas===3?700:seas===0?160:240)","time-o.fruitT>bushRipeT()")
+patch("c.pop=false;c.cool=time+60}","c.pop=false;c.cool=time+1500}")
+s=s.replace("if(structs.length>24)structs.shift();","if(structs.length>40)structs.shift();")
+patch("if(r.st==='bench'&&!stationNear('bench'))return'اقترب من الطاولة';","if(r.st!=='hand'&&!stationNear(r.st))return'اقترب من '+stName(r.st);")
+patch("(r.st==='bench'?'طاولة · ':'يدوي · ')","(stName(r.st)+' · ')")
+patch("$('stn').textContent=bn?'أنت قرب الطاولة: يمكنك الصناعة المتقدمة':'بلا طاولة: الصناعة اليدوية فقط';","$('stn').textContent=stnText();")
+patch("S.flag.crafted=1;xpGain(","S.flag.crafted=1;stnHot(r);xpGain(")
+patch("s.kind==='shelter'&&(S.energy<85||night>.45)","(s.kind==='shelter'||s.kind==='bed')&&(S.energy<85||night>.45)")
+patch("'أنجزت '+done+' من '+QS.length+' · اليوم '","'اليوم '")
+patch("mm.addEventListener('click',()=>{mapOn=false;mm.hidden=true;if(SFX.ui)SFX.ui()});","mm.addEventListener('click',()=>{mapClick()});")
+patch("  const all=list.slice();","  const all=list.slice();shadeInject(all);")
+patch("toast('جهّزت الموقد. أشعله بحشيش جاف وصوّان')","toast('جُهّز الموقد')")
+patch("S.hp-=dmg;S.iT=.55;","S.hp-=dmg*1.15;S.iT=.55;")
+patch("rnd()<.07+.09*night","rnd()<.09+.14*night")
 open(p,'w',encoding='utf-8').write(s)
 print('injected',len(block))

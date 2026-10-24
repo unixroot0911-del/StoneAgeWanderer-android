@@ -10,3 +10,12 @@
 - Next: test on real devices.
 - Fauna update: source in dev/fauna_art.js + dev/fauna_sys.js; run `python3 dev/inject.py` to (re)inject into app/src/main/assets/game.html (idempotent, between /*FAUNA_BEGIN*/ and /*FAUNA_END*/ plus a few one-line source patches).
 - Tested headless (Chromium): all species render, AI works, taming->ally->fights, XP/level, journal. Multiplayer mirror of new species verified.
+
+## v3 Hardcore update (in progress)
+- Plan in TASKS.md. Approach: new dev/v3.js block + source patches in dev/inject.py. Test via Playwright harness in /tmp/claude-0.
+
+## v3 Hardcore update — DONE (built via dev/v3a.js, v3b.js, v3c.js; injected by dev/inject.py between /*V3_BEGIN*/ and /*V3_END*/)
+- Always edit dev/*.js then run `python3 dev/inject.py` (idempotent; legacy patches warn+skip if already applied).
+- Test: python3 /tmp/claude-0/mk.py builds test.html (exposes `__e(code)` = eval in game scope); node /tmp/claude-0/t3.js..t7.js (swim, temp/stations/map, shade, inventory).
+- Decisions: S.warmth is now derived from core temp S.bt (warmth=(bt-32)/5*100). S.air breath, S.san sanity, S.inf infection, S.wet. Water depth `wdep(x,y)`; deep>0.85 = swimming. Shade is a client-only pseudo-object (not in ents, not synced).
+- Known: loom placement failed in a test once due to blocked spot (not a bug). Multiplayer regression: both clients reach live state.
