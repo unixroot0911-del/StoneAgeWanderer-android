@@ -507,7 +507,7 @@ const angDiff=(a,b)=>{let d=a-b;while(d>Math.PI)d-=TAU;while(d<-Math.PI)d+=TAU;r
 let camA=0,camAT=0,elev=ELDEF,zoomK=1,qual=1,muted=false;
 /* fixed quality — the low/medium presets made the world look broken, so there is
    exactly one setting now. */
-const QUAL={light:.32,parts:520,ents:110,aiRange:48,wildEvery:.14,wildMax:70,wildFar:40};
+const QUAL={light:.32,parts:520,ents:70,aiRange:30,wildEvery:.14,wildMax:45,wildFar:28};
 let CA=1,SA=0;
 const cam={wx:0,wy:0};
 function setView(){CA=Math.cos(camA);SA=Math.sin(camA);HH=HW*Math.sin(elev);U=U0*Math.cos(elev)/.866}
@@ -1893,9 +1893,9 @@ function manageEnts(dt){
   if(spawnT<=0){
     spawnT=1;
     const pcx=Math.floor(P.x/CS),pcy=Math.floor(P.y/CS);let made=0;
-    for(let a=pcx-6;a<=pcx+6;a++)for(let b=pcy-6;b<=pcy+6;b++){
+    for(let a=pcx-4;a<=pcx+4;a++)for(let b=pcy-4;b<=pcy+4;b++){
       const mx=a*CS+CS/2,my=b*CS+CS/2,d=dist(mx,my,P.x,P.y);
-      if(d<24||d>46)continue;
+      if(d<22||d>34)continue;
       if(!chunks.has(a+','+b)){if(made>=6)continue;made++}
       const c=getChunk(a,b);
       if(!c.pop&&c.cool<=time)populate(c);
@@ -1903,7 +1903,7 @@ function manageEnts(dt){
   }
   for(let i=ents.length-1;i>=0;i--){
     const e=ents[i];
-    if(e.gone||(e.dead&&e.dT>170)||(!e.dead&&dist(e.x,e.y,P.x,P.y)>72)){
+    if(e.gone||(e.dead&&e.dT>170)||(!e.dead&&dist(e.x,e.y,P.x,P.y)>48)){
       if(e.tree)e.tree.birdy=false;releaseEnt(e);ents.splice(i,1);continue;
     }
     if(dist(e.x,e.y,P.x,P.y)<AI_RANGE)updEnt(e,dt,((entTick+i)&1)===0);
@@ -6559,14 +6559,14 @@ function senseEnt(e,dt){
 /* sneak attack on unaware animals */
 {const _he=hurtEnt;hurtEnt=function(e,dmg,src,kx,ky){
   if(src==='player'&&!e.dead&&!e.noticed&&(e.aw||0)<.5&&SENS[e.sp]){dmg*=P.stance?2.4:1.6;floatText(e.x,e.y,'ضربة غادرة','#ffd27a')}
-  return _he.call(this,dmg,src,kx,ky)}}
+  return _he.call(this,e,dmg,src,kx,ky)}}
 /* ! and ? over animals */
 {const _de=drawEnt;drawEnt=function(e,sx,sy){
   const r=_de.apply(this,arguments);
-  if(!e.dead&&(e.aw||0)>.3&&SENS[e.sp]&&!e.ally){
-    const y=sy-(e.z||0)*U-(AN[e.sp].r*48+26),al=clamp(e.aw,.3,1);
+  if(!e.dead&&SENS[e.sp]&&!e.ally&&(e.noticed||(e.st==='flee'&&Math.hypot(e.x-P.x,e.y-P.y)<22))){
+    const y=sy-(e.z||0)*U-(AN[e.sp].r*48+26),al=1;
     ctx.save();ctx.globalAlpha=al;ctx.font='bold 18px Rubik,sans-serif';ctx.textAlign='center';ctx.lineWidth=4;ctx.strokeStyle='rgba(15,8,4,.9)';
-    const t=e.noticed?'!':'؟';ctx.strokeText(t,sx,y);ctx.fillStyle=e.noticed?(PRED[e.sp]?'#ff5a4a':'#ffd27a'):'#f2e08a';ctx.fillText(t,sx,y);ctx.restore();
+    const t='!';ctx.strokeText(t,sx,y);ctx.fillStyle=e.noticed?(PRED[e.sp]?'#ff5a4a':'#ffd27a'):'#f2e08a';ctx.fillText(t,sx,y);ctx.restore();
   }
   return r}}
 /* player posture */

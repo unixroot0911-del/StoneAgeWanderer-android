@@ -47,3 +47,9 @@
 
 ## v3.7
 - Replaced symptom toasts with real FX+sounds in v3g.js: cold (camera shiver, body tremor, teeth chatter, breath fog), heat (panting, sweat drops), wet drips, low sanity (tinnitus, phantom footsteps, black flicker), season ambience (winter wind gusts, autumn leaf rustle, summer cicadas). Verified only headlessly; audio levels need device feedback.
+
+## v3.8
+- FIX: hurtEnt wrapper in v3f.js dropped `e` arg → player could not damage anything since v3.4. Fixed.
+- "!" marker now only for animals that noticed the player or flee within 22 units; "?" removed.
+- Lag: sim radius cut (QUAL ents 70, aiRange 30, wildMax 45, spawn ring 22-34, chunk loop ±4, despawn 48). Patched in inject.py.
+- Open: wolf trail-following less consistent in headless test after radius change (st idle) — recheck.

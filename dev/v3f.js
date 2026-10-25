@@ -71,14 +71,14 @@ function senseEnt(e,dt){
 /* sneak attack on unaware animals */
 {const _he=hurtEnt;hurtEnt=function(e,dmg,src,kx,ky){
   if(src==='player'&&!e.dead&&!e.noticed&&(e.aw||0)<.5&&SENS[e.sp]){dmg*=P.stance?2.4:1.6;floatText(e.x,e.y,'ضربة غادرة','#ffd27a')}
-  return _he.call(this,dmg,src,kx,ky)}}
+  return _he.call(this,e,dmg,src,kx,ky)}}
 /* ! and ? over animals */
 {const _de=drawEnt;drawEnt=function(e,sx,sy){
   const r=_de.apply(this,arguments);
-  if(!e.dead&&(e.aw||0)>.3&&SENS[e.sp]&&!e.ally){
-    const y=sy-(e.z||0)*U-(AN[e.sp].r*48+26),al=clamp(e.aw,.3,1);
+  if(!e.dead&&SENS[e.sp]&&!e.ally&&(e.noticed||(e.st==='flee'&&Math.hypot(e.x-P.x,e.y-P.y)<22))){
+    const y=sy-(e.z||0)*U-(AN[e.sp].r*48+26),al=1;
     ctx.save();ctx.globalAlpha=al;ctx.font='bold 18px Rubik,sans-serif';ctx.textAlign='center';ctx.lineWidth=4;ctx.strokeStyle='rgba(15,8,4,.9)';
-    const t=e.noticed?'!':'؟';ctx.strokeText(t,sx,y);ctx.fillStyle=e.noticed?(PRED[e.sp]?'#ff5a4a':'#ffd27a'):'#f2e08a';ctx.fillText(t,sx,y);ctx.restore();
+    const t='!';ctx.strokeText(t,sx,y);ctx.fillStyle=e.noticed?(PRED[e.sp]?'#ff5a4a':'#ffd27a'):'#f2e08a';ctx.fillText(t,sx,y);ctx.restore();
   }
   return r}}
 /* player posture */
