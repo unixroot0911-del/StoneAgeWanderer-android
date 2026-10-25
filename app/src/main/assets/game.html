@@ -2843,7 +2843,7 @@ function updChips(dt){
 const SEAS_TEMP=[0,6,-10,-38];
 function updSeason(dt){
   if(!(Net.on&&!Net.host))seas=Math.floor(((S.day-1)%24)/6);
-  if(seas!==lastSeas){if(lastSeas>=0&&S.alive){banner('بدأ '+SEAS[seas]);toast(seas===3?'الشتاء: برد قارس. جهّز النار والطعام':seas===1?'الصيف: الطعام يفسد أسرع':seas===2?'الخريف: تتساقط الأوراق':'الربيع: تزدهر الأرض')}lastSeas=seas}
+  if(seas!==lastSeas){if(lastSeas>=0&&S.alive){0}lastSeas=seas}
   const g=seas===3?1:seas===2&&S.day%24>=22?.0:0;
   snowK+=((seas===3?1:0)-snowK)*Math.min(1,dt*.06);
 }
@@ -3496,7 +3496,7 @@ function hud(dt){
   const v=barV();
   for(const k in bars){const el=bars[k],pc=clamp(v[k],0,100);el.firstElementChild.firstElementChild.style.width=pc.toFixed(0)+'%';el.classList.toggle('low',pc<25&&S.alive)}
   const hh=Math.floor(tod*24),mm=Math.floor((tod*24-hh)*60);
-  clk.textContent='اليوم '+S.day+' · '+String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0')+' · '+SEAS[seas]+(rain>.3?(seas===3?' · ثلج':' · ممطر'):'');
+  clk.textContent='اليوم '+S.day+' · '+String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0')+(rain>.3?(seas===3?' · ثلج':' · ممطر'):'');
   const ob=objective();objEl.hidden=!ob;if(ob&&objEl.textContent!==ob)objEl.textContent=ob;
   const A=P.atk;pips.forEach((p,i)=>p.classList.toggle('on',A.n>0?i<A.n:(A.gap>0&&i<A.next-1)));
   const deg=Math.round(Math.atan2(SA+CA,CA-SA)*57.2958);
@@ -6469,10 +6469,10 @@ const frozen=()=>seas===3&&snowK>.75;
     else{
       const d=deep?clamp(wdep(ix+.5,iy+.5),.75,2.6):.3;
       path();ctx.fillStyle='rgba(8,30,60,'+(deep?(.05+(d-.75)*.2):0).toFixed(3)+')';if(deep)ctx.fill();
-      const w1=Math.sin(T*1.3+ph),w2=Math.sin(T*.9+ph*1.7);
+      if(!LITE){const w1=Math.sin(T*1.3+ph),w2=Math.sin(T*.9+ph*1.7);
       ctx.strokeStyle='rgba(255,255,255,'+(.10+.10*w1*w1).toFixed(3)+')';ctx.lineWidth=1.1;
       ctx.beginPath();ctx.moveTo(cx-9+w2*3,cy-2);ctx.quadraticCurveTo(cx-3,cy-5*hs+w1*1.4,cx+3,cy-2);ctx.quadraticCurveTo(cx+7,cy+1*hs,cx+11+w2*2,cy-1);ctx.stroke();
-      if(((ix*7+iy*13)&7)===0){const s=.5+.5*Math.sin(T*3+ph);ctx.fillStyle='rgba(255,255,255,'+(.25*s).toFixed(2)+')';ctx.fillRect(cx+4,cy-3,2,2)}
+      if(((ix*7+iy*13)&7)===0){const s=.5+.5*Math.sin(T*3+ph);ctx.fillStyle='rgba(255,255,255,'+(.25*s).toFixed(2)+')';ctx.fillRect(cx+4,cy-3,2,2)}}
     }
     /* shoreline foam on edges that touch land */
     const nb=[tile(ix,iy-1),tile(ix+1,iy),tile(ix,iy+1),tile(ix-1,iy)];
@@ -6490,7 +6490,7 @@ const frozen=()=>seas===3&&snowK>.75;
 P.stance=0;
 const STAN_N=['واقف','جالس','زاحف'];
 function setStance(n){if(n===P.stance||!S.alive||P.state!=='live'||sleeping)return;if(P.swim&&n>0){toast('لا يمكنك ذلك في الماء العميق',true);return}P.stance=n;stBtnUpd();SFX.ui&&SFX.ui()}
-function cycleStance(){setStance((P.stance+1)%3)}
+function cycleStance(){setStance((P.stance+1)%2)}
 const stSpd=()=>[1,.58,.3][P.stance||0];
 {const _pj=pressJump;pressJump=function(){if(P.stance){setStance(0);return}return _pj.apply(this,arguments)}}
 {const _step=SFX.step;SFX.step=function(){if(P.stance===2)return;if(P.stance===1&&Math.random()<.55)return;return _step.apply(this,arguments)}}
@@ -6592,7 +6592,7 @@ function senseEnt(e,dt){
   document.head.appendChild(st);
   b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();cycleStance()});
   const v=document.getElementById('v3st');if(v){const s=document.createElement('span');s.id='v3s';v.insertBefore(s,v.firstChild)}
-  document.addEventListener('keydown',e=>{if(e.repeat)return;if(e.code==='KeyC')setStance(P.stance===1?0:1);else if(e.code==='KeyZ')setStance(P.stance===2?0:2)});
+  document.addEventListener('keydown',e=>{if(e.repeat)return;if(e.code==='KeyC')setStance(P.stance===1?0:1);});
 }
 const STSVG=[
  '<svg viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2.4"/><path fill="none" d="M12 8v8M12 16l-3 5M12 16l3 5M12 10l-4 4M12 10l4 4"/></svg>',
@@ -6660,12 +6660,14 @@ let pk1=0,pk2=0;
   }
   return r}}
 /* ---- 3) tracks & blood ---- */
+let LITE=0,fAvg=.016;
 const TKS=[];let tkId=1,tkD=0,tkB=0,tkX=0,tkY=0;
 const TRK={wolf:1,bear:1,sabertooth:1};
 function trkLife(t){return(t.b?150:90)*(snowK>.4?1.5:1)/(1+rain*2.5)}
 function trkFresh(t){return(time-t.t)<trkLife(t)}
 {const _u=update;update=function(dtRaw){
   const r=_u.apply(this,arguments);
+  fAvg+=(Math.min(dtRaw,.2)-fAvg)*.03;if(fAvg>.027)LITE=1;else if(fAvg<.02)LITE=0;
   if(S.alive&&P.state==='live'&&!sleeping){
     const d=Math.hypot(P.x-tkX,P.y-tkY);
     if(d>[.9,1.7,2.8][P.stance||0]&&!P.swim){tkX=P.x;tkY=P.y;TKS.push({id:tkId++,x:P.x,y:P.y,t:time,b:0})}
@@ -6702,6 +6704,7 @@ function trkTarget(e){
 /* draw tracks */
 {const _dg=drawGround;drawGround=function(l,r,t,b){
   const x=_dg.apply(this,arguments);
+  if(LITE>0&&TKS.length>40)return x;
   for(let i=0;i<TKS.length;i++){
     const k=TKS[i],age=time-k.t;if(age>trkLife(k)||(!k.b&&age<7))continue;
     const p=proj(k.x,k.y,0),u=1-age/trkLife(k);
@@ -6738,6 +6741,30 @@ function eSnd(e,kind){
       if(e.sp==='wolf')SFX.howl(e);else if(e.sp==='bear')SFX.roar(e);else SFX.growl(e)}
   }
   return r}}
+/* ---- hidden stats: no numbers, the player reads symptoms ---- */
+{const st=document.createElement('style');st.textContent='#v3t,#v3san,#v3s{display:none!important}';document.head.appendChild(st)}
+const HINT={};let hintT=0,fogT=0,hintLast=0;
+function hint(k,txt,cd,bad){if(time-(HINT[k]||-999)<cd||time-hintLast<12)return;HINT[k]=time;hintLast=time;toast(txt,bad)}
+{const _h=hud;hud=function(dt){
+  _h.apply(this,arguments);
+  if(!S.alive||P.state!=='live')return;
+  fogT-=dt;
+  if(fogT<=0){fogT=2.4;if(S.amb<6||S.bt<35.4)emit('puff',P.x+Math.cos(P.face)*.3,P.y+Math.sin(P.face)*.3,.95,{col:'rgba(235,242,255,.55)',size:3.5,vx:Math.cos(P.face)*.4,vy:Math.sin(P.face)*.4})}
+  hintT-=dt;if(hintT>0)return;hintT=1.5;
+  const bt=S.bt;
+  if(bt<33)hint('c3','لا تشعر بأطرافك… أنت تتجمد',60,true);
+  else if(bt<34.6)hint('c2','ترتجف بشدة، أسنانك تصطك',60,true);
+  else if(bt<35.6)hint('c1','برد يتسلل إلى عظامك',90);
+  else if(bt>39.2)hint('h3','رأسك يدور… الحرارة لا تُحتمل',60,true);
+  else if(bt>38.3)hint('h2','العرق يتصبب منك، جسمك محموم',70,true);
+  else if(S.amb>28&&bt>37.6)hint('h1','الجو خانق وحار',120);
+  if(S.wet>.6&&S.amb<12)hint('w','ثيابك مبللة وتسحب دفء جسمك',100);
+  if(S.san<18)hint('s3','الأصوات في رأسك لا تتوقف… لم تعد تميّز الحقيقة',70,true);
+  else if(S.san<40)hint('s2','قلبك يخفق… تشعر أن أحداً يراقبك',90,true);
+  else if(S.san<60)hint('s1','عقلك مشوش وأعصابك مشدودة',120);
+  if(seas!==hintSeas){hintSeas=seas;if(hintSeas0){hint('sn'+seas,['الأرض تخضرّ والهواء ألطف','حرّ شديد… الطعام يفسد أسرع','الأوراق تتساقط والنهار يقصر','الهواء يجمّد أنفاسك… بدأ الشتاء'][seas],5)}hintSeas0=true}
+}}
+let hintSeas=-1,hintSeas0=false;
 
 /*V3_END*/
 /* auto fullscreen on first touch/click */

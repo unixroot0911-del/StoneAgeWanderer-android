@@ -72,10 +72,10 @@ const frozen=()=>seas===3&&snowK>.75;
     else{
       const d=deep?clamp(wdep(ix+.5,iy+.5),.75,2.6):.3;
       path();ctx.fillStyle='rgba(8,30,60,'+(deep?(.05+(d-.75)*.2):0).toFixed(3)+')';if(deep)ctx.fill();
-      const w1=Math.sin(T*1.3+ph),w2=Math.sin(T*.9+ph*1.7);
+      if(!LITE){const w1=Math.sin(T*1.3+ph),w2=Math.sin(T*.9+ph*1.7);
       ctx.strokeStyle='rgba(255,255,255,'+(.10+.10*w1*w1).toFixed(3)+')';ctx.lineWidth=1.1;
       ctx.beginPath();ctx.moveTo(cx-9+w2*3,cy-2);ctx.quadraticCurveTo(cx-3,cy-5*hs+w1*1.4,cx+3,cy-2);ctx.quadraticCurveTo(cx+7,cy+1*hs,cx+11+w2*2,cy-1);ctx.stroke();
-      if(((ix*7+iy*13)&7)===0){const s=.5+.5*Math.sin(T*3+ph);ctx.fillStyle='rgba(255,255,255,'+(.25*s).toFixed(2)+')';ctx.fillRect(cx+4,cy-3,2,2)}
+      if(((ix*7+iy*13)&7)===0){const s=.5+.5*Math.sin(T*3+ph);ctx.fillStyle='rgba(255,255,255,'+(.25*s).toFixed(2)+')';ctx.fillRect(cx+4,cy-3,2,2)}}
     }
     /* shoreline foam on edges that touch land */
     const nb=[tile(ix,iy-1),tile(ix+1,iy),tile(ix,iy+1),tile(ix-1,iy)];

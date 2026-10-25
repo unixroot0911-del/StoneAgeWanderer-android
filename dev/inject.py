@@ -80,5 +80,7 @@ patch("scatter('flint',1,o.x,o.y);SFX.thud()}","scatter('flint',1,o.x,o.y);oreDr
 patch("case'herb':playAct('gather',.5);give('herb',1+(Math.random()<.4?1:0));","case'herb':playAct('gather',.5);give('herb',1+(Math.random()<.4?1:0));if(Math.random()<.3)give('seeds',1);")
 s=s.replace("wid==='axe'","wk(wid)==='axe'").replace("wid==='spear_wood'","wk(wid)==='spear_wood'").replace("wid==='spear'","wk(wid)==='spear'") if "wk(wid)" not in s else s
 patch("S.weapon!=='spear'&&S.weapon!=='spear_wood'","wk(S.weapon)!=='spear'&&wk(S.weapon)!=='spear_wood'")
+s=s.replace("+' · '+SEAS[seas]+(rain>.3","+(rain>.3")
+s=s.replace("banner('بدأ '+SEAS[seas]);toast(seas===3?'الشتاء: برد قارس. جهّز النار والطعام':seas===1?'الصيف: الطعام يفسد أسرع':seas===2?'الخريف: تتساقط الأوراق':'الربيع: تزدهر الأرض')","0")
 open(p,'w',encoding='utf-8').write(s)
 print('injected',len(block))

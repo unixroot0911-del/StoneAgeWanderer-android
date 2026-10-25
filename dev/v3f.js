@@ -2,7 +2,7 @@
 P.stance=0;
 const STAN_N=['واقف','جالس','زاحف'];
 function setStance(n){if(n===P.stance||!S.alive||P.state!=='live'||sleeping)return;if(P.swim&&n>0){toast('لا يمكنك ذلك في الماء العميق',true);return}P.stance=n;stBtnUpd();SFX.ui&&SFX.ui()}
-function cycleStance(){setStance((P.stance+1)%3)}
+function cycleStance(){setStance((P.stance+1)%2)}
 const stSpd=()=>[1,.58,.3][P.stance||0];
 {const _pj=pressJump;pressJump=function(){if(P.stance){setStance(0);return}return _pj.apply(this,arguments)}}
 {const _step=SFX.step;SFX.step=function(){if(P.stance===2)return;if(P.stance===1&&Math.random()<.55)return;return _step.apply(this,arguments)}}
@@ -104,7 +104,7 @@ function senseEnt(e,dt){
   document.head.appendChild(st);
   b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();cycleStance()});
   const v=document.getElementById('v3st');if(v){const s=document.createElement('span');s.id='v3s';v.insertBefore(s,v.firstChild)}
-  document.addEventListener('keydown',e=>{if(e.repeat)return;if(e.code==='KeyC')setStance(P.stance===1?0:1);else if(e.code==='KeyZ')setStance(P.stance===2?0:2)});
+  document.addEventListener('keydown',e=>{if(e.repeat)return;if(e.code==='KeyC')setStance(P.stance===1?0:1);});
 }
 const STSVG=[
  '<svg viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2.4"/><path fill="none" d="M12 8v8M12 16l-3 5M12 16l3 5M12 10l-4 4M12 10l4 4"/></svg>',

@@ -40,3 +40,7 @@
 - v3g.js added to inject.py list. Pose: pk1/pk2 eased, modifies P.rig after updPlayer. Tracks: TKS array (not TK, which exists), foot every .9/1.7/2.8 units by stance, blood while S.bleed; life shrinks with rain, grows with snow. Predators (TRK) follow when not noticed: trkTarget returns fake P 7 units ahead toward next track. Sounds in updEnt wrapper.
 - Tested headless (t12.js): poses OK, trail made, wolf followed. Unverified on device: audio balance.
 - Next ideas: edge arrows for offscreen threats, animals leaving tracks for player to read, peer rig poses in multiplayer.
+
+## v3.6
+- Crawl removed (stance 0/1 only; pose code for crawl remains inert). Top HUD readouts hidden (temp/sanity/stealth pill/season name/season banner); replaced by symptom toasts + breath fog (v3g `hint()`). Air bar kept.
+- Lag: adaptive LITE mode (v3g, fAvg of frame time) skips water wave FX and track drawing on slow devices. Unverified on device.

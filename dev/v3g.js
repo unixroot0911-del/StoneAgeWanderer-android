@@ -24,12 +24,14 @@ let pk1=0,pk2=0;
   }
   return r}}
 /* ---- 3) tracks & blood ---- */
+let LITE=0,fAvg=.016;
 const TKS=[];let tkId=1,tkD=0,tkB=0,tkX=0,tkY=0;
 const TRK={wolf:1,bear:1,sabertooth:1};
 function trkLife(t){return(t.b?150:90)*(snowK>.4?1.5:1)/(1+rain*2.5)}
 function trkFresh(t){return(time-t.t)<trkLife(t)}
 {const _u=update;update=function(dtRaw){
   const r=_u.apply(this,arguments);
+  fAvg+=(Math.min(dtRaw,.2)-fAvg)*.03;if(fAvg>.027)LITE=1;else if(fAvg<.02)LITE=0;
   if(S.alive&&P.state==='live'&&!sleeping){
     const d=Math.hypot(P.x-tkX,P.y-tkY);
     if(d>[.9,1.7,2.8][P.stance||0]&&!P.swim){tkX=P.x;tkY=P.y;TKS.push({id:tkId++,x:P.x,y:P.y,t:time,b:0})}
@@ -66,6 +68,7 @@ function trkTarget(e){
 /* draw tracks */
 {const _dg=drawGround;drawGround=function(l,r,t,b){
   const x=_dg.apply(this,arguments);
+  if(LITE>0&&TKS.length>40)return x;
   for(let i=0;i<TKS.length;i++){
     const k=TKS[i],age=time-k.t;if(age>trkLife(k)||(!k.b&&age<7))continue;
     const p=proj(k.x,k.y,0),u=1-age/trkLife(k);
@@ -102,3 +105,27 @@ function eSnd(e,kind){
       if(e.sp==='wolf')SFX.howl(e);else if(e.sp==='bear')SFX.roar(e);else SFX.growl(e)}
   }
   return r}}
+/* ---- hidden stats: no numbers, the player reads symptoms ---- */
+{const st=document.createElement('style');st.textContent='#v3t,#v3san,#v3s{display:none!important}';document.head.appendChild(st)}
+const HINT={};let hintT=0,fogT=0,hintLast=0;
+function hint(k,txt,cd,bad){if(time-(HINT[k]||-999)<cd||time-hintLast<12)return;HINT[k]=time;hintLast=time;toast(txt,bad)}
+{const _h=hud;hud=function(dt){
+  _h.apply(this,arguments);
+  if(!S.alive||P.state!=='live')return;
+  fogT-=dt;
+  if(fogT<=0){fogT=2.4;if(S.amb<6||S.bt<35.4)emit('puff',P.x+Math.cos(P.face)*.3,P.y+Math.sin(P.face)*.3,.95,{col:'rgba(235,242,255,.55)',size:3.5,vx:Math.cos(P.face)*.4,vy:Math.sin(P.face)*.4})}
+  hintT-=dt;if(hintT>0)return;hintT=1.5;
+  const bt=S.bt;
+  if(bt<33)hint('c3','لا تشعر بأطرافك… أنت تتجمد',60,true);
+  else if(bt<34.6)hint('c2','ترتجف بشدة، أسنانك تصطك',60,true);
+  else if(bt<35.6)hint('c1','برد يتسلل إلى عظامك',90);
+  else if(bt>39.2)hint('h3','رأسك يدور… الحرارة لا تُحتمل',60,true);
+  else if(bt>38.3)hint('h2','العرق يتصبب منك، جسمك محموم',70,true);
+  else if(S.amb>28&&bt>37.6)hint('h1','الجو خانق وحار',120);
+  if(S.wet>.6&&S.amb<12)hint('w','ثيابك مبللة وتسحب دفء جسمك',100);
+  if(S.san<18)hint('s3','الأصوات في رأسك لا تتوقف… لم تعد تميّز الحقيقة',70,true);
+  else if(S.san<40)hint('s2','قلبك يخفق… تشعر أن أحداً يراقبك',90,true);
+  else if(S.san<60)hint('s1','عقلك مشوش وأعصابك مشدودة',120);
+  if(seas!==hintSeas){hintSeas=seas;if(hintSeas0){hint('sn'+seas,['الأرض تخضرّ والهواء ألطف','حرّ شديد… الطعام يفسد أسرع','الأوراق تتساقط والنهار يقصر','الهواء يجمّد أنفاسك… بدأ الشتاء'][seas],5)}hintSeas0=true}
+}}
+let hintSeas=-1,hintSeas0=false;
