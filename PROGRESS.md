@@ -33,3 +33,5 @@
 
 ## Auto-update support
 - Fixed signing key app/saw.keystore (committed) + versionCode = 100 + GitHub run number, so each new APK installs OVER the previous one. APKs built before this commit were signed with random debug keys: uninstall the old one ONE time, after that updates install in place. NEVER change/delete the keystore or applicationId.
+
+## v3.4 stealth (dev/v3f.js): stances (button #stBtn / keys C,Z): stand/sit(crouch)/crawl; player noise (SN.noise), cover, wind-based smell; animals have awareness (e.aw / e.noticed) via SENS table, un-noticed animals run AI with P temporarily offset (hack in updEnt wrapper); '?'/'!' icons; sneak attack x1.6/x2.4; stat bars show numbers + danger levels + screen/sound cues.

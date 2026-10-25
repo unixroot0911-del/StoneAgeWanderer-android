@@ -16,7 +16,7 @@ else:
     s=s.replace(m,block+m)
 
 # ---- V3 block (after FAUNA) ----
-v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js'))
+v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js','v3f.js'))
 V1,V2='/*V3_BEGIN*/','/*V3_END*/'
 vblock=V1+'\n'+v3+V2+'\n'
 if V1 in s:
@@ -41,6 +41,8 @@ patch("""    else if(d.use==='map')act+='<button class="btn" data-a="use">افت
 patch("  if(Net.on)for(const q of Net.peers.values()){const x=px(q.rx)","  for(const q of ents){if(q.ally&&!q.dead){mmg.beginPath();mmg.arc(px(q.x),py(q.y),3.4*sc/1.6,0,6.283);mmg.fillStyle='#d6453a';mmg.fill();mmg.lineWidth=1.3;mmg.strokeStyle='#fff';mmg.stroke()}}\n  if(Net.on)for(const q of Net.peers.values()){const x=px(q.rx)")
 
 # ---- V3 patches ----
+patch("tsp*=spdMul()*envSpd();","tsp*=spdMul()*envSpd()*stSpd();")
+patch("&&!P.air&&!P.swim;","&&!P.air&&!P.swim&&!P.stance;")
 patch("else if(!P.air&&P.atk.n===0)S.stam=Math.min(stCap","else if(!P.air&&P.atk.n===0&&!P.swim)S.stam=Math.min(stCap")
 if "  let target=100-night*70" in s:
     a=s.index("  let target=100-night*70");b=s.index("  if(S.torchT>0)S.torchT-=dt;")
