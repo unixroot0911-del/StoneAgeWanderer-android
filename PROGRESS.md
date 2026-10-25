@@ -35,3 +35,8 @@
 - Fixed signing key app/saw.keystore (committed) + versionCode = 100 + GitHub run number, so each new APK installs OVER the previous one. APKs built before this commit were signed with random debug keys: uninstall the old one ONE time, after that updates install in place. NEVER change/delete the keystore or applicationId.
 
 ## v3.4 stealth (dev/v3f.js): stances (button #stBtn / keys C,Z): stand/sit(crouch)/crawl; player noise (SN.noise), cover, wind-based smell; animals have awareness (e.aw / e.noticed) via SENS table, un-noticed animals run AI with P temporarily offset (hack in updEnt wrapper); '?'/'!' icons; sneak attack x1.6/x2.4; stat bars show numbers + danger levels + screen/sound cues.
+
+## v3.5 (tracks/pose/sound)
+- v3g.js added to inject.py list. Pose: pk1/pk2 eased, modifies P.rig after updPlayer. Tracks: TKS array (not TK, which exists), foot every .9/1.7/2.8 units by stance, blood while S.bleed; life shrinks with rain, grows with snow. Predators (TRK) follow when not noticed: trkTarget returns fake P 7 units ahead toward next track. Sounds in updEnt wrapper.
+- Tested headless (t12.js): poses OK, trail made, wolf followed. Unverified on device: audio balance.
+- Next ideas: edge arrows for offscreen threats, animals leaving tracks for player to read, peer rig poses in multiplayer.

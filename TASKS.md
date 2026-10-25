@@ -6,3 +6,8 @@ Swim/drown (player+animals, depth based), quests/tutorial removed, new cached mi
 2. Water tile rendering is still flat blocky diamonds — could add shimmer/shoreline foam.
 3. Ice on frozen lakes in winter; fishing rod; chest storage; more clothing slots.
 4. Guests in multiplayer: shade/sanity are local-only by design.
+
+## Done v3.5
+- [x] Real sit/crouch + crawl pose (dev/v3g.js pose wrapper on updPlayer)
+- [x] Positional animal footsteps/rustle/distant howl-roar (spat)
+- [x] Tracks (TKS) + blood trail; wolf/bear/sabertooth follow them (trkTarget, fake-P trick in v3f updEnt)

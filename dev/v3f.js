@@ -61,7 +61,7 @@ function senseEnt(e,dt){
 {const _ue=updEnt;updEnt=function(e,dt,full){
   if(!e.dead&&full!==false)senseEnt(e,dt);
   if(!e.dead&&SENS[e.sp]&&!e.ally&&!e.noticed&&e.tgt!=='player'&&S.alive){
-    const ox=P.x,oy=P.y;P.x=ox+5000;P.y=oy+5000;
+    const ox=P.x,oy=P.y;const fp=trkTarget(e);P.x=fp?fp.x:ox+5000;P.y=fp?fp.y:oy+5000;
     try{return _ue.apply(this,arguments)}finally{P.x=ox;P.y=oy}
   }
   return _ue.apply(this,arguments);
@@ -84,7 +84,7 @@ function senseEnt(e,dt){
 /* player posture */
 {const _dp=drawPlayer;drawPlayer=function(){
   const st=P.stance;if(!st||P.state!=='live')return _dp.apply(this,arguments);
-  const p=proj(P.x,P.y,P.z||0);ctx.save();ctx.translate(p[0],p[1]);ctx.scale(st===1?1.05:1.32,st===1?.8:.5);ctx.translate(-p[0],-p[1]);
+  const p=proj(P.x,P.y,P.z||0);ctx.save();
   if(SN.cover<1)ctx.globalAlpha=.78;
   try{_dp.apply(this,arguments)}finally{ctx.restore()}
 }}
