@@ -107,25 +107,40 @@ function eSnd(e,kind){
   return r}}
 /* ---- hidden stats: no numbers, the player reads symptoms ---- */
 {const st=document.createElement('style');st.textContent='#v3t,#v3san,#v3s{display:none!important}';document.head.appendChild(st)}
-const HINT={};let hintT=0,fogT=0,hintLast=0;
-function hint(k,txt,cd,bad){if(time-(HINT[k]||-999)<cd||time-hintLast<12)return;HINT[k]=time;hintLast=time;toast(txt,bad)}
+SFX.chatter=function(){for(let i=0;i<6;i++)N(K0,{d:.03,f0:rr(2200,3400),q:5,g:.16,dl:i*.055+Math.random()*.02});O(K0,{d:.4,f0:130,f1:110,type:'triangle',g:.04,a:.1})};
+SFX.shivBreath=function(){N(K0,{d:.7,f0:2600,f1:1400,q:.9,g:.12,a:.2});N(K0,{d:.5,f0:900,f1:500,q:1,g:.08,a:.1,dl:.1})};
+SFX.gasp=function(){N(K0,{d:.5,f0:700,f1:2200,q:1.2,g:.2,a:.12});N(K0,{d:.5,f0:1200,f1:500,q:1.2,g:.16,a:.05,dl:.6})};
+SFX.drip=function(){const f=rr(1100,1800);O(K0,{d:.09,f0:f,f1:f*.5,g:.14});N(K0,{d:.04,f0:4000,q:3,g:.05})};
+SFX.tinnitus=function(){O(K0,{d:2.2,f0:6800,f1:6600,g:.03,a:.5})};
+SFX.phantomStep=function(){const p=Math.random()<.5?-.7:.7;const k={g:.5,p:p,w:.5};for(let i=0;i<4;i++){O(k,{d:.2,f0:80,f1:40,g:.4,dl:i*.42});N(k,{d:.1,f0:600,f1:200,type:'lowpass',g:.2,dl:i*.42})}};
+SFX.windGust=function(){const d=3+Math.random()*3;N(K0,{d:d,f0:300,f1:900,type:'bandpass',q:1.6,g:.28,a:d*.45});N(K0,{d:d,f0:1100,f1:500,type:'bandpass',q:2,g:.12,a:d*.5})};
+SFX.leafRustle=function(){for(let i=0;i<9;i++)N(K0,{d:.12,f0:rr(3500,6500),type:'highpass',q:.7,g:.07,dl:Math.random()*1.6,a:.03})};
+SFX.cicada=function(){O(K0,{d:2.5,f0:4300,f1:4400,type:'square',lp:5200,am:[75,.9],g:.018,a:.5})};
+let gfx={chat:3,breath:5,pant:1,drip:2,tin:20,ph:30,seas:6,flick:9};
 {const _h=hud;hud=function(dt){
   _h.apply(this,arguments);
   if(!S.alive||P.state!=='live')return;
-  fogT-=dt;
-  if(fogT<=0){fogT=2.4;if(S.amb<6||S.bt<35.4)emit('puff',P.x+Math.cos(P.face)*.3,P.y+Math.sin(P.face)*.3,.95,{col:'rgba(235,242,255,.55)',size:3.5,vx:Math.cos(P.face)*.4,vy:Math.sin(P.face)*.4})}
-  hintT-=dt;if(hintT>0)return;hintT=1.5;
-  const bt=S.bt;
-  if(bt<33)hint('c3','لا تشعر بأطرافك… أنت تتجمد',60,true);
-  else if(bt<34.6)hint('c2','ترتجف بشدة، أسنانك تصطك',60,true);
-  else if(bt<35.6)hint('c1','برد يتسلل إلى عظامك',90);
-  else if(bt>39.2)hint('h3','رأسك يدور… الحرارة لا تُحتمل',60,true);
-  else if(bt>38.3)hint('h2','العرق يتصبب منك، جسمك محموم',70,true);
-  else if(S.amb>28&&bt>37.6)hint('h1','الجو خانق وحار',120);
-  if(S.wet>.6&&S.amb<12)hint('w','ثيابك مبللة وتسحب دفء جسمك',100);
-  if(S.san<18)hint('s3','الأصوات في رأسك لا تتوقف… لم تعد تميّز الحقيقة',70,true);
-  else if(S.san<40)hint('s2','قلبك يخفق… تشعر أن أحداً يراقبك',90,true);
-  else if(S.san<60)hint('s1','عقلك مشوش وأعصابك مشدودة',120);
-  if(seas!==hintSeas){hintSeas=seas;if(hintSeas0){hint('sn'+seas,['الأرض تخضرّ والهواء ألطف','حرّ شديد… الطعام يفسد أسرع','الأوراق تتساقط والنهار يقصر','الهواء يجمّد أنفاسك… بدأ الشتاء'][seas],5)}hintSeas0=true}
+  for(const k in gfx)gfx[k]-=dt;
+  const bt=S.bt,cold=clamp((35.8-bt)/3,0,1),hot=clamp((bt-37.9)/1.8,0,1),sn=S.san;
+  if(S.amb<6||bt<35.4){if(gfx.fog===undefined||(gfx.fog-=dt)<=0){gfx.fog=2.3;emit('puff',P.x+Math.cos(P.face)*.3,P.y+Math.sin(P.face)*.3,.95,{col:'rgba(235,242,255,.6)',size:3.5+cold*2,vx:Math.cos(P.face)*.4,vy:Math.sin(P.face)*.4})}}
+  if(cold>0){
+    shake=Math.max(shake,.1+.22*cold);
+    if(gfx.chat<=0){gfx.chat=cold>.5?2.2:5;SFX.chatter()}
+    if(gfx.breath<=0){gfx.breath=3.5;SFX.shivBreath()}
+  }
+  if(hot>0){
+    if(gfx.pant<=0){gfx.pant=1.4-hot*.6;SFX.pant()}
+    if(Math.random()<dt*2*hot)emit('puff',P.x+(Math.random()-.5)*.3,P.y+(Math.random()-.5)*.3,1.3,{col:'rgba(150,200,240,.8)',size:2})}
+  if(S.wet>.5&&gfx.drip<=0){gfx.drip=1.2+Math.random()*2;SFX.drip();emit('puff',P.x,P.y,.5,{col:'rgba(150,200,240,.7)',size:2})}
+  if(sn<30&&gfx.tin<=0){gfx.tin=25+Math.random()*20;SFX.tinnitus()}
+  if(sn<50&&gfx.ph<=0){gfx.ph=18+Math.random()*25;SFX.phantomStep()}
+  if(sn<35&&gfx.flick<=0){gfx.flick=8+Math.random()*12;const f=$('flash');if(f){f.style.transition='none';f.style.background='rgba(0,0,0,.85)';f.style.opacity=1;setTimeout(()=>{f.style.transition='opacity .25s';f.style.opacity=0;f.style.background=''},90)}}
+  if(gfx.seas<=0){gfx.seas=9+Math.random()*9;
+    if(seas===3)SFX.windGust();else if(seas===2)SFX.leafRustle();else if(seas===1&&night<.3)SFX.cicada();}
 }}
-let hintSeas=-1,hintSeas0=false;
+/* shivering / trembling body */
+{const _up=updPlayer;updPlayer=function(){
+  const r=_up.apply(this,arguments);const R=P.rig;if(!R||!S.alive)return r;
+  const cold=clamp((35.8-S.bt)/3,0,1),sick=clamp((S.hp<30?1:0)+(S.bt>38.6?.6:0),0,1),a=Math.max(cold,sick*.5);
+  if(a>.02){const t=time*(cold?38:14),j=Math.sin(t)*.03*a;R.pv[0]+=j;R.pv[6]-=j;R.pv[1]+=Math.cos(t*1.3)*.025*a;R.pv[9]+=Math.sin(t*.9)*.05*a;R.hipZ+=Math.sin(t*1.7)*.008*a}
+  return r}}

@@ -44,3 +44,6 @@
 ## v3.6
 - Crawl removed (stance 0/1 only; pose code for crawl remains inert). Top HUD readouts hidden (temp/sanity/stealth pill/season name/season banner); replaced by symptom toasts + breath fog (v3g `hint()`). Air bar kept.
 - Lag: adaptive LITE mode (v3g, fAvg of frame time) skips water wave FX and track drawing on slow devices. Unverified on device.
+
+## v3.7
+- Replaced symptom toasts with real FX+sounds in v3g.js: cold (camera shiver, body tremor, teeth chatter, breath fog), heat (panting, sweat drops), wet drips, low sanity (tinnitus, phantom footsteps, black flicker), season ambience (winter wind gusts, autumn leaf rustle, summer cicadas). Verified only headlessly; audio levels need device feedback.
