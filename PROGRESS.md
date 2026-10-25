@@ -64,3 +64,7 @@
 - Stacks: STK map in inject.py (log 4, stone 6, stick 12 ... kits 2, default 8).
 - Dropped items (manual drop) can't be picked for random 5-10 s (drop.nl).
 - Camera rotation removed (drag horizontal, pinch twist, Q/E, saved/loaded angle forced 0); tilt+zoom kept. ZMIN .72->.85; grass LOD (k===0 objects beyond ~10-14 units skipped when zoomed out or LITE).
+
+## v3.11
+- Bigger stacks (STK in inject.py, default 12, kits 3) + dev/v3i.js: bundles (pk_<id>, BUN map, rope cost for wood things, 8 bundles/slot, pack/unpack buttons in #info) and carry weight (WTK kg, capacity 45 +3/extra slot, over-capacity slows via spdMul wrapper, shown in inventory header).
+- inject.py: dedupe of LOD patches (rep isn't idempotent when old text is substring of new).

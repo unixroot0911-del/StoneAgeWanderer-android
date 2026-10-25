@@ -16,7 +16,7 @@ else:
     s=s.replace(m,block+m)
 
 # ---- V3 block (after FAUNA) ----
-v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js','v3f.js','v3g.js','v3h.js'))
+v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js','v3f.js','v3g.js','v3h.js','v3i.js'))
 V1,V2='/*V3_BEGIN*/','/*V3_END*/'
 vblock=V1+'\n'+v3+V2+'\n'
 if V1 in s:
@@ -94,7 +94,10 @@ rep("document.addEventListener('touchmove',e=>{if(e.target.closest&&(e.target.cl
     "document.addEventListener('touchmove',e=>{let n=e.target;while(n&&n!==document.body){if(n.nodeType===1&&n.scrollHeight>n.clientHeight+2){const oy=getComputedStyle(n).overflowY;if(oy==='auto'||oy==='scroll')return}n=n.parentNode}e.preventDefault()},{passive:false});")
 s=re.sub(r"(\.panel\{width:min\(100%,780px\);[^\n]*?position:relative;)overflow:hidden\}",r"\1overflow-y:auto;overflow-x:hidden;touch-action:pan-y;-webkit-overflow-scrolling:touch}",s,count=1)
 rep("const stackOf=id=>(IT[id].dur?1:20);",
-    "const STK={log:4,stick:12,plank:6,stone:6,flint:8,clay:8,brick:6,fiber:16,rope:6,resin:8,herb:10,berries:10,apple:8,mushroom:8,raw_meat:3,raw_fish:4,cooked_meat:3,cooked_fish:4,smoked_meat:4,smoked_fish:4,bone:8,hide:3,leather:4,feather:20,fang:8,sinew:8,charcoal:8,firewood:6,tinder:12,arrow:12,seeds:20,wheat:10,flour:6,turnip:6,bread:4,copper_ore:6,tin_ore:6,iron_ore:5,copper_ingot:4,tin_ingot:4,iron_ingot:4,bronze_ingot:4,flint_blade:10,cloth:6,bandage:8,pot:3,raw_pot:3,pot_water:2,pot_clean:2,waterskin:1};\nconst stackOf=id=>(IT[id].dur?1:(STK[id]||(/_kit$/.test(id)?2:8)));")
+    "const STK={log:8,stick:20,plank:10,stone:12,flint:12,clay:12,brick:10,fiber:30,rope:10,resin:12,herb:20,berries:20,apple:12,mushroom:12,raw_meat:5,raw_fish:6,cooked_meat:5,cooked_fish:6,smoked_meat:6,smoked_fish:6,bone:12,hide:5,leather:6,feather:40,fang:12,sinew:12,charcoal:12,firewood:10,tinder:20,arrow:20,seeds:40,wheat:20,flour:10,turnip:10,bread:6,copper_ore:10,tin_ore:10,iron_ore:8,copper_ingot:8,tin_ingot:8,iron_ingot:8,bronze_ingot:8,flint_blade:16,cloth:10,bandage:12,pot:4,raw_pot:4,pot_water:2,pot_clean:2,waterskin:1};\nconst stackOf=id=>(IT[id].dur?1:(STK[id]||(/_kit$/.test(id)?3:12)));")
+NEWSTK="const STK={log:8,stick:20,plank:10,stone:12,flint:12,clay:12,brick:10,fiber:30,rope:10,resin:12,herb:20,berries:20,apple:12,mushroom:12,raw_meat:5,raw_fish:6,cooked_meat:5,cooked_fish:6,smoked_meat:6,smoked_fish:6,bone:12,hide:5,leather:6,feather:40,fang:12,sinew:12,charcoal:12,firewood:10,tinder:20,arrow:20,seeds:40,wheat:20,flour:10,turnip:10,bread:6,copper_ore:10,tin_ore:10,iron_ore:8,copper_ingot:8,tin_ingot:8,iron_ingot:8,bronze_ingot:8,flint_blade:16,cloth:10,bandage:12,pot:4,raw_pot:4,pot_water:2,pot_clean:2,waterskin:1};\nconst stackOf=id=>(IT[id].dur?1:(STK[id]||(/_kit$/.test(id)?3:12)));"
+s=re.sub(r"const STK=\{[^}]*\};\nconst stackOf=[^\n]*",lambda m:NEWSTK,s,count=1)
+
 rep("dropItem(s.id,s.n,P.x,P.y,s.d,s.f);inv[i]=null;","dropItem(s.id,s.n,P.x,P.y,s.d,s.f);drops[drops.length-1].nl=5+Math.random()*5;inv[i]=null;")
 rep("if(live&&d.t>.55){","if(live&&d.t>(d.nl||.55)){")
 rep("const rk=(keys.KeyE?1:0)-(keys.KeyQ?1:0);","const rk=0;")
@@ -105,5 +108,8 @@ rep("camA=d.cam.a;camAT=d.cam.at;","camA=camAT=0;")
 rep("ZMIN=.72","ZMIN=.85")
 rep("o.sx=sx;o.sy=sy;o.key=(vx+vy)*KD;list.push(o);\n    }\n  }\n  const hsc","if(o.k===0&&lodR2<1e8){const ddx=o.x-P.x,ddy=o.y-P.y;if(ddx*ddx+ddy*ddy>lodR2)continue}o.sx=sx;o.sy=sy;o.key=(vx+vy)*KD;list.push(o);\n    }\n  }\n  const hsc")
 rep("  const pk=vkey(P.x,P.y),pp=proj(P.x,P.y,0);\n  const bx=worldBox(","  const lodR2=(zoomK<1.05||(typeof LITE!=='undefined'&&LITE))?(zoomK<.95?110:190):1e9;\n  const pk=vkey(P.x,P.y),pp=proj(P.x,P.y,0);\n  const bx=worldBox(")
+
+for _ln in ["  const lodR2=(zoomK<1.05||(typeof LITE!=='undefined'&&LITE))?(zoomK<.95?110:190):1e9;\n","if(o.k===0&&lodR2<1e8){const ddx=o.x-P.x,ddy=o.y-P.y;if(ddx*ddx+ddy*ddy>lodR2)continue}"]:
+    while _ln+_ln in s: s=s.replace(_ln+_ln,_ln)
 open(p,'w',encoding='utf-8').write(s)
 print('injected',len(block))
