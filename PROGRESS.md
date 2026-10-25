@@ -53,3 +53,8 @@
 - "!" marker now only for animals that noticed the player or flee within 22 units; "?" removed.
 - Lag: sim radius cut (QUAL ents 70, aiRange 30, wildMax 45, spawn ring 22-34, chunk loop ±4, despawn 48). Patched in inject.py.
 - Open: wolf trail-following less consistent in headless test after radius change (st idle) — recheck.
+
+## v3.9
+- Recipes: inventory guide shows only hand recipes with at least one owned ingredient; station panels same rule (recPart in v3d.js). Firewood now log+axe -> 3.
+- NEW dev/v3h.js: custom weapon carving workshop (button in carp/forge panel). Grid 48x80 of materials, drag items in, tools knife/saw/hammer (metal needs hot forge + tongs), rope binding of mixed-material joints, stats from shape (cwAnalyze), saved in S.cust (hex string), rebuilt on load (restoreSnapshot wrapper), held sprite via cwDrawHand (inject patch in drawPlayer), swing speed via WEAP.spd.
+- Tested headlessly (t16/t17). Needs device test: touch dragging, layout on small phones.

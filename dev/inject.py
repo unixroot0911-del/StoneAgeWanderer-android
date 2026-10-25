@@ -16,7 +16,7 @@ else:
     s=s.replace(m,block+m)
 
 # ---- V3 block (after FAUNA) ----
-v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js','v3f.js','v3g.js'))
+v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js','v3f.js','v3g.js','v3h.js'))
 V1,V2='/*V3_BEGIN*/','/*V3_END*/'
 vblock=V1+'\n'+v3+V2+'\n'
 if V1 in s:
@@ -84,5 +84,6 @@ s=s.replace("+' · '+SEAS[seas]+(rain>.3","+(rain>.3")
 s=s.replace("banner('بدأ '+SEAS[seas]);toast(seas===3?'الشتاء: برد قارس. جهّز النار والطعام':seas===1?'الصيف: الطعام يفسد أسرع':seas===2?'الخريف: تتساقط الأوراق':'الربيع: تزدهر الأرض')","0")
 for a,b in [("ents:110,aiRange:48,wildEvery:.14,wildMax:70,wildFar:40","ents:70,aiRange:30,wildEvery:.14,wildMax:45,wildFar:28"),("pcx-6;a<=pcx+6;a++)for(let b=pcy-6;b<=pcy+6;b++)","pcx-4;a<=pcx+4;a++)for(let b=pcy-4;b<=pcy+4;b++)"),("if(d<24||d>46)continue;","if(d<22||d>34)continue;"),(">72)){\n      if(e.tree)",">48)){\n      if(e.tree)")]:
     s=s.replace(a,b)
+patch("    if(wk(wid)==='axe'||wk(wid)==='spear'||wk(wid)==='spear_wood'){\n      const sp=","    if(CWIMG[wid]&&cwDrawHand(wid,c0,c4))return;\n    if(wk(wid)==='axe'||wk(wid)==='spear'||wk(wid)==='spear_wood'){\n      const sp=")
 open(p,'w',encoding='utf-8').write(s)
 print('injected',len(block))

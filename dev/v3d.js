@@ -263,6 +263,7 @@ stnHot=function(r){
   if(invOpen&&recStn){fuelUiT-=dt;if(fuelUiT<=0){fuelUiT=.6;invDirty=true}}
 }}
 let fuelUiT=0;
+const recPart=r=>Object.keys(r.in).some(k=>countItem(k)>0);
 /* ---- panel ---- */
 function stnPanel(k){
   const s=stObj(k);if(!s)return'<div style="padding:8px;opacity:.8">ابتعد قليلاً ثم اقترب من المحطة</div>';
@@ -288,11 +289,11 @@ function stnPanel(k){
   if(recStn){
     tabs.style.display='none';
     st.textContent=stName(recStn)+' — '+(STN[recStn]?STN[recStn].d:'');
-    recs.innerHTML=stnPanel(recStn)+(REC.map((r,i)=>[r,i]).filter(o=>o[0].st===recStn).map(o=>row(o[0],o[1],true)).join('')||'<div style="padding:10px;opacity:.7">لا وصفات هنا</div>');
+    recs.innerHTML=stnPanel(recStn)+(REC.map((r,i)=>[r,i]).filter(o=>o[0].st===recStn&&recPart(o[0])).map(o=>row(o[0],o[1],true)).join('')||'<div style="padding:10px;opacity:.7">لا تملك مواد تُصنع هنا — اجمع مواداً وارجع</div>');
   }else{
     tabs.style.display='';
     st.textContent='دليل الوصفات: المحطات تُصنع هنا بالأيدي، وكل شيء آخر يُصنع عند محطته (اقترب منها واضغط "اصنع")';
-    recs.innerHTML=REC.map((r,i)=>[r,i]).filter(o=>o[0].cat===recTab).map(o=>row(o[0],o[1],o[0].st==='hand')).join('');
+    recs.innerHTML=REC.map((r,i)=>[r,i]).filter(o=>o[0].cat===recTab&&o[0].st==='hand'&&recPart(o[0])).map(o=>row(o[0],o[1],true)).join('')||'<div style="padding:10px;opacity:.7">لا شيء تصنعه بيديك من حقيبتك الآن</div>';
   }
 }}
 document.getElementById('inv').addEventListener('click',e=>{
