@@ -85,5 +85,25 @@ s=s.replace("banner('بدأ '+SEAS[seas]);toast(seas===3?'الشتاء: برد �
 for a,b in [("ents:110,aiRange:48,wildEvery:.14,wildMax:70,wildFar:40","ents:70,aiRange:30,wildEvery:.14,wildMax:45,wildFar:28"),("pcx-6;a<=pcx+6;a++)for(let b=pcy-6;b<=pcy+6;b++)","pcx-4;a<=pcx+4;a++)for(let b=pcy-4;b<=pcy+4;b++)"),("if(d<24||d>46)continue;","if(d<22||d>34)continue;"),(">72)){\n      if(e.tree)",">48)){\n      if(e.tree)")]:
     s=s.replace(a,b)
 patch("    if(wk(wid)==='axe'||wk(wid)==='spear'||wk(wid)==='spear_wood'){\n      const sp=","    if(CWIMG[wid]&&cwDrawHand(wid,c0,c4))return;\n    if(wk(wid)==='axe'||wk(wid)==='spear'||wk(wid)==='spear_wood'){\n      const sp=")
+
+def rep(a,b):
+    global s
+    if a in s: s=s.replace(a,b)
+    elif b not in s: print('WARN rep miss:',a[:60])
+rep("document.addEventListener('touchmove',e=>{if(e.target.closest&&(e.target.closest('#recs')||e.target.closest('#roster')||e.target.closest('.net-shell')))return;e.preventDefault()},{passive:false});",
+    "document.addEventListener('touchmove',e=>{let n=e.target;while(n&&n!==document.body){if(n.nodeType===1&&n.scrollHeight>n.clientHeight+2){const oy=getComputedStyle(n).overflowY;if(oy==='auto'||oy==='scroll')return}n=n.parentNode}e.preventDefault()},{passive:false});")
+s=re.sub(r"(\.panel\{width:min\(100%,780px\);[^\n]*?position:relative;)overflow:hidden\}",r"\1overflow-y:auto;overflow-x:hidden;touch-action:pan-y;-webkit-overflow-scrolling:touch}",s,count=1)
+rep("const stackOf=id=>(IT[id].dur?1:20);",
+    "const STK={log:4,stick:12,plank:6,stone:6,flint:8,clay:8,brick:6,fiber:16,rope:6,resin:8,herb:10,berries:10,apple:8,mushroom:8,raw_meat:3,raw_fish:4,cooked_meat:3,cooked_fish:4,smoked_meat:4,smoked_fish:4,bone:8,hide:3,leather:4,feather:20,fang:8,sinew:8,charcoal:8,firewood:6,tinder:12,arrow:12,seeds:20,wheat:10,flour:6,turnip:6,bread:4,copper_ore:6,tin_ore:6,iron_ore:5,copper_ingot:4,tin_ingot:4,iron_ingot:4,bronze_ingot:4,flint_blade:10,cloth:6,bandage:8,pot:3,raw_pot:3,pot_water:2,pot_clean:2,waterskin:1};\nconst stackOf=id=>(IT[id].dur?1:(STK[id]||(/_kit$/.test(id)?2:8)));")
+rep("dropItem(s.id,s.n,P.x,P.y,s.d,s.f);inv[i]=null;","dropItem(s.id,s.n,P.x,P.y,s.d,s.f);drops[drops.length-1].nl=5+Math.random()*5;inv[i]=null;")
+rep("if(live&&d.t>.55){","if(live&&d.t>(d.nl||.55)){")
+rep("const rk=(keys.KeyE?1:0)-(keys.KeyQ?1:0);","const rk=0;")
+rep("if(op.size===1){camA-=dx*.0085;camAT=camA;elev=","if(op.size===1){elev=")
+rep("if(pinch){zoomK=clamp(zoomK*n.d/pinch.d,ZMIN,ZMAX);camA+=angDiff(n.a,pinch.a);camAT=camA}","if(pinch){zoomK=clamp(zoomK*n.d/pinch.d,ZMIN,ZMAX)}")
+rep("camA=camAT=+j.a||0;","camA=camAT=0;")
+rep("camA=d.cam.a;camAT=d.cam.at;","camA=camAT=0;")
+rep("ZMIN=.72","ZMIN=.85")
+rep("o.sx=sx;o.sy=sy;o.key=(vx+vy)*KD;list.push(o);\n    }\n  }\n  const hsc","if(o.k===0&&lodR2<1e8){const ddx=o.x-P.x,ddy=o.y-P.y;if(ddx*ddx+ddy*ddy>lodR2)continue}o.sx=sx;o.sy=sy;o.key=(vx+vy)*KD;list.push(o);\n    }\n  }\n  const hsc")
+rep("  const pk=vkey(P.x,P.y),pp=proj(P.x,P.y,0);\n  const bx=worldBox(","  const lodR2=(zoomK<1.05||(typeof LITE!=='undefined'&&LITE))?(zoomK<.95?110:190):1e9;\n  const pk=vkey(P.x,P.y),pp=proj(P.x,P.y,0);\n  const bx=worldBox(")
 open(p,'w',encoding='utf-8').write(s)
 print('injected',len(block))

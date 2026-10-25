@@ -58,3 +58,9 @@
 - Recipes: inventory guide shows only hand recipes with at least one owned ingredient; station panels same rule (recPart in v3d.js). Firewood now log+axe -> 3.
 - NEW dev/v3h.js: custom weapon carving workshop (button in carp/forge panel). Grid 48x80 of materials, drag items in, tools knife/saw/hammer (metal needs hot forge + tongs), rope binding of mixed-material joints, stats from shape (cwAnalyze), saved in S.cust (hex string), rebuilt on load (restoreSnapshot wrapper), held sprite via cwDrawHand (inject patch in drawPlayer), swing speed via WEAP.spd.
 - Tested headlessly (t16/t17). Needs device test: touch dragging, layout on small phones.
+
+## v3.10
+- Scroll fix: touchmove blocker now allows any scrollable ancestor; .panel overflow-y:auto; custom-craft lists pan-y.
+- Stacks: STK map in inject.py (log 4, stone 6, stick 12 ... kits 2, default 8).
+- Dropped items (manual drop) can't be picked for random 5-10 s (drop.nl).
+- Camera rotation removed (drag horizontal, pinch twist, Q/E, saved/loaded angle forced 0); tilt+zoom kept. ZMIN .72->.85; grass LOD (k===0 objects beyond ~10-14 units skipped when zoomed out or LITE).

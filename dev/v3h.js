@@ -209,16 +209,16 @@ cwEl.innerHTML='<div class="cw-box"><div class="cw-h"><b id="cwT"></b><button id
  +'</div></div>';
 document.body.appendChild(cwEl);
 {const st=document.createElement('style');st.textContent=
-'#cwin{position:fixed;inset:0;z-index:40;display:grid;place-items:center;padding:6px;background:rgba(10,6,2,.78);font-family:Rubik,sans-serif;color:#f1e3c4;direction:rtl;touch-action:none}'
+'#cwin{position:fixed;inset:0;z-index:40;display:grid;place-items:center;padding:6px;background:rgba(10,6,2,.78);font-family:Rubik,sans-serif;color:#f1e3c4;direction:rtl}'
 +'#cwin[hidden]{display:none}.cw-box{width:min(980px,100%);height:min(430px,100%);background:linear-gradient(#3a2815,#2a1b0d);border:2px solid #8a6a3a;border-radius:14px;display:flex;flex-direction:column;box-shadow:0 10px 40px rgba(0,0,0,.6);overflow:hidden}'
 +'.cw-h{display:flex;justify-content:space-between;align-items:center;padding:6px 12px;background:rgba(0,0,0,.28);border-bottom:1px solid rgba(255,220,150,.18);font-size:15px}#cwX{background:none;border:0;color:#f1e3c4;font-size:20px;cursor:pointer;padding:2px 8px}'
-+'.cw-body{flex:1;display:flex;gap:8px;padding:8px;min-height:0}.cw-mat,.cw-side{width:150px;display:flex;flex-direction:column;gap:5px;min-height:0;overflow:auto}.cw-side{width:168px}'
++'.cw-body{flex:1;display:flex;gap:8px;padding:8px;min-height:0}.cw-mat,.cw-side{touch-action:pan-y;-webkit-overflow-scrolling:touch;width:150px;display:flex;flex-direction:column;gap:5px;min-height:0;overflow:auto}.cw-side{width:168px}'
 +'.cw-lbl{font-size:11px;opacity:.7;margin-top:2px}.cw-mid{flex:1;display:flex;flex-direction:column;align-items:center;min-width:0;min-height:0}'
 +'.cw-wrap{position:relative;flex:1;min-height:0;aspect-ratio:48/80;max-width:100%;background:#4a3320;border:2px solid #20130a;border-radius:8px;overflow:hidden;'
 +'background-image:linear-gradient(rgba(255,230,180,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,230,180,.06) 1px,transparent 1px),repeating-linear-gradient(90deg,rgba(0,0,0,.14) 0 2px,transparent 2px 14px);background-size:10% 6.25%,10% 6.25%,auto}'
 +'.cw-wrap canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}#cwF{pointer-events:none}'
 +'#cwMsg{font-size:12px;min-height:30px;text-align:center;color:#ffd9a0;padding:3px 6px;line-height:1.35}'
-+'.cwm{display:flex;align-items:center;gap:6px;padding:4px 6px;background:rgba(0,0,0,.28);border:1px solid rgba(255,220,150,.2);border-radius:8px;font-size:12px;cursor:grab;user-select:none;touch-action:none}.cwm img{width:30px;height:30px}.cwm.no{opacity:.35;cursor:default}.cwm b{margin-right:auto;font-size:11px;opacity:.85}'
++'.cwm{display:flex;align-items:center;gap:6px;padding:4px 6px;background:rgba(0,0,0,.28);border:1px solid rgba(255,220,150,.2);border-radius:8px;font-size:12px;cursor:grab;user-select:none;touch-action:pan-y}.cwm img{width:30px;height:30px}.cwm.no{opacity:.35;cursor:default}.cwm b{margin-right:auto;font-size:11px;opacity:.85}'
 +'.cwb{background:rgba(0,0,0,.3);color:#f1e3c4;border:1px solid rgba(255,220,150,.3);border-radius:8px;padding:5px 8px;font-size:12px;cursor:pointer;font-family:inherit}.cwb.on{background:#7a4f20;border-color:#ffd27a;color:#fff}.cwb.no{opacity:.35}.cwb.pri{background:#3f7a35;border-color:#9be07e;width:100%;padding:8px;font-size:14px}'
 +'#cwTools{display:grid;grid-template-columns:1fr 1fr;gap:4px}#cwAct{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:2px}'
 +'.cws{font-size:11px;display:grid;grid-template-columns:auto 1fr auto;gap:3px 6px;align-items:center}.cws i{display:block;height:6px;border-radius:4px;background:rgba(0,0,0,.4);overflow:hidden}.cws i s{display:block;height:100%;background:#d9a441}'
@@ -290,6 +290,7 @@ function cwClose(refund){
     if(mm&&!mm.classList.contains('no')){dragId=mm.dataset.m;sx=e.clientX;sy=e.clientY;CW.dragged=false;return}
     if(e.target.id==='cwC')cwDown(e);
   });
+  window.addEventListener('pointercancel',()=>{if(ghost){ghost.remove();ghost=null}dragId=null});
   window.addEventListener('pointermove',e=>{
     if(!CW||cwEl.hidden)return;
     if(dragId){
