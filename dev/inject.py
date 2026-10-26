@@ -101,11 +101,6 @@ s=re.sub(r"const STK=\{[^}]*\};\nconst stackOf=[^\n]*",lambda m:NEWSTK,s,count=1
 
 rep("dropItem(s.id,s.n,P.x,P.y,s.d,s.f);inv[i]=null;","dropItem(s.id,s.n,P.x,P.y,s.d,s.f);drops[drops.length-1].nl=5+Math.random()*5;inv[i]=null;")
 rep("if(live&&d.t>.55){","if(live&&d.t>(d.nl||.55)){")
-rep("const rk=(keys.KeyE?1:0)-(keys.KeyQ?1:0);","const rk=0;")
-rep("if(op.size===1){camA-=dx*.0085;camAT=camA;elev=","if(op.size===1){elev=")
-rep("if(pinch){zoomK=clamp(zoomK*n.d/pinch.d,ZMIN,ZMAX);camA+=angDiff(n.a,pinch.a);camAT=camA}","if(pinch){zoomK=clamp(zoomK*n.d/pinch.d,ZMIN,ZMAX)}")
-rep("camA=camAT=+j.a||0;","camA=camAT=0;")
-rep("camA=d.cam.a;camAT=d.cam.at;","camA=camAT=0;")
 rep("ZMIN=.72","ZMIN=.85")
 rep("o.sx=sx;o.sy=sy;o.key=(vx+vy)*KD;list.push(o);\n    }\n  }\n  const hsc","if(o.k===0&&lodR2<1e8){const ddx=o.x-P.x,ddy=o.y-P.y;if(ddx*ddx+ddy*ddy>lodR2)continue}o.sx=sx;o.sy=sy;o.key=(vx+vy)*KD;list.push(o);\n    }\n  }\n  const hsc")
 rep("  const pk=vkey(P.x,P.y),pp=proj(P.x,P.y,0);\n  const bx=worldBox(","  const lodR2=(zoomK<1.05||(typeof LITE!=='undefined'&&LITE))?(zoomK<.95?110:190):1e9;\n  const pk=vkey(P.x,P.y),pp=proj(P.x,P.y,0);\n  const bx=worldBox(")
@@ -113,5 +108,9 @@ rep("  const pk=vkey(P.x,P.y),pp=proj(P.x,P.y,0);\n  const bx=worldBox(","  cons
 for _ln in ["  const lodR2=(zoomK<1.05||(typeof LITE!=='undefined'&&LITE))?(zoomK<.95?110:190):1e9;\n","if(o.k===0&&lodR2<1e8){const ddx=o.x-P.x,ddy=o.y-P.y;if(ddx*ddx+ddy*ddy>lodR2)continue}"]:
     while _ln+_ln in s: s=s.replace(_ln+_ln,_ln)
 rep("</head><body>","</head><body><div id=\"v3boot\" style=\"position:fixed;inset:0;background:#000;z-index:200\"></div>")
+rep("const rk=0;","const rk=(keys.KeyE?1:0)-(keys.KeyQ?1:0);")
+rep("if(op.size===1){elev=clamp(elev+dy*.0025,ELMIN,ELMAX)}","if(op.size===1){camA-=dx*.0085;camAT=camA}")
+rep("camA=camAT=0;elev=clamp(+j.e||ELDEF,ELMIN,ELMAX)","camA=camAT=+j.a||0;elev=ELDEF")
+rep("camA=camAT=0;elev=d.cam.e;","camA=d.cam.a;camAT=d.cam.at;elev=ELDEF;")
 open(p,'w',encoding='utf-8').write(s)
 print('injected',len(block))

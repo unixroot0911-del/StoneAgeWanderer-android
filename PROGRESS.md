@@ -71,3 +71,7 @@
 
 ## v3.12
 - dev/v3j.js: cinematic boot splash (#v3boot, canvas art v3art: moon, ridges, mammoth, fire, wanderer; logo reveal; tap to start + title sting), menu buttons stagger in after tap, loading screen (#v3load) wrapping loadFinish (async w/ paint, min ~2s, tips), gameplay HUD hidden on main menu (body.inmenu). inject.py rep() made idempotent.
+
+## v3.13
+- Main menu now has the live art (v3art mode 'menu', canvas #v3mbg) behind it; boot/loading timings shortened (boot tap after .35s, loading min ~1.1s).
+- Camera: vertical tilt removed (elev fixed ELDEF); horizontal drag rotation + Q/E restored; pinch zoom kept (pinch twist stays off).
