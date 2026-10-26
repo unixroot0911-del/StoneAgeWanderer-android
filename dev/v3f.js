@@ -72,15 +72,6 @@ function senseEnt(e,dt){
 {const _he=hurtEnt;hurtEnt=function(e,dmg,src,kx,ky){
   if(src==='player'&&!e.dead&&!e.noticed&&(e.aw||0)<.5&&SENS[e.sp]){dmg*=P.stance?2.4:1.6;floatText(e.x,e.y,'ضربة غادرة','#ffd27a')}
   return _he.call(this,e,dmg,src,kx,ky)}}
-/* ! and ? over animals */
-{const _de=drawEnt;drawEnt=function(e,sx,sy){
-  const r=_de.apply(this,arguments);
-  if(!e.dead&&SENS[e.sp]&&!e.ally&&(e.noticed||(e.st==='flee'&&Math.hypot(e.x-P.x,e.y-P.y)<22))){
-    const y=sy-(e.z||0)*U-(AN[e.sp].r*48+26),al=1;
-    ctx.save();ctx.globalAlpha=al;ctx.font='bold 18px Rubik,sans-serif';ctx.textAlign='center';ctx.lineWidth=4;ctx.strokeStyle='rgba(15,8,4,.9)';
-    const t='!';ctx.strokeText(t,sx,y);ctx.fillStyle=e.noticed?(PRED[e.sp]?'#ff5a4a':'#ffd27a'):'#f2e08a';ctx.fillText(t,sx,y);ctx.restore();
-  }
-  return r}}
 /* player posture */
 {const _dp=drawPlayer;drawPlayer=function(){
   const st=P.stance;if(!st||P.state!=='live')return _dp.apply(this,arguments);
@@ -143,5 +134,5 @@ SFX.drycough=function(){N(K0,{d:.1,f0:1700,q:2,g:.2});N(K0,{d:.1,f0:1500,q:2,g:.
   if(S.stam<14&&gT.pant<=0){gT.pant=1.1;SFX.pant()}
   if(S.hunger<22&&gT.stomach<=0){gT.stomach=12+Math.random()*8;SFX.stomach()}
   if(S.thirst<22&&gT.thirst<=0){gT.thirst=14+Math.random()*8;SFX.drycough()}
-  if(S.hp<30&&gT.heart<=0){gT.heart=.55+S.hp/30*.7;SFX.heart()}
+  if(S.hp<45&&gT.heart<=0){gT.heart=.5+S.hp/45*.8;SFX.heart()}
 }}

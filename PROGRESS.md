@@ -78,3 +78,8 @@
 
 ## v3.13b
 - Fix: boot tap did nothing on device — v3tick() ran synchronously during script load and could throw (zero-size canvas / NaN gradient), aborting v3j before listeners attached. Now tick is try/catch'd, started at end of file, and tap is bound on boot overlay (pointer/touch/click) plus document capture.
+
+## v3.14
+- Removed the "!" marker over animals (drawEnt wrapper deleted from v3f).
+- dev/v3k.js: living bars (the original width writes hit the svg path, so bars never moved - now written to <b>): ghost trail, hit/gain flash, pulse+glow when low, trend arrows, recent-damage counter, threat chip (hostiles that noticed you) + alarm horn, red screen-edge pulse <28 hp. Heartbeat starts below 45 hp.
+- Balance: player damage x1.05 (was 1.15), i-frames .75s (was .55).
