@@ -288,7 +288,7 @@ function stnPanel(k){
     (en?'<button class="btn" data-c="'+i+'"'+(pr?' disabled':'')+'>'+(r.bg?'ابدأ':'اصنع')+'</button>':'<span style="font-size:11px;opacity:.7;padding:0 6px">'+(r.st==='hand'?'':'عند المحطة')+'</span>')+'</div>'};
   if(recStn){
     tabs.style.display='none';
-    st.textContent=stName(recStn)+' — '+(STN[recStn]?STN[recStn].d:'');
+    st.textContent=stName(recStn);
     recs.innerHTML=stnPanel(recStn)+(REC.map((r,i)=>[r,i]).filter(o=>o[0].st===recStn&&recPart(o[0])).map(o=>row(o[0],o[1],true)).join('')||'<div style="padding:10px;opacity:.7">لا تملك مواد تُصنع هنا — اجمع مواداً وارجع</div>');
   }else{
     tabs.style.display='';

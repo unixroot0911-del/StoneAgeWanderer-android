@@ -83,3 +83,8 @@
 - Removed the "!" marker over animals (drawEnt wrapper deleted from v3f).
 - dev/v3k.js: living bars (the original width writes hit the svg path, so bars never moved - now written to <b>): ghost trail, hit/gain flash, pulse+glow when low, trend arrows, recent-damage counter, threat chip (hostiles that noticed you) + alarm horn, red screen-edge pulse <28 hp. Heartbeat starts below 45 hp.
 - Balance: player damage x1.05 (was 1.15), i-frames .75s (was .55).
+
+## v3.15
+- dev/v3l.js: all on-screen alert/hint text silenced (sound/FX only). Poison reworked: dmg .65/s, green HP toxin segment, screen tint/wobble, retching; cures: antidote full, charcoal -14s (works at full hunger), herb -6s, clean water -3s.
+- Handbook "كتيّب المسافر" via #qbtn: open pages (start, bag, craft w/ known recipes, food, body) + discoverable pages (S.dis flags), chime+glow on unlock.
+- Tested headless (t24.js): no toasts, charcoal cures, book opens. Not verified on device.

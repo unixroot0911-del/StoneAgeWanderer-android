@@ -16,7 +16,7 @@ else:
     s=s.replace(m,block+m)
 
 # ---- V3 block (after FAUNA) ----
-v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js','v3f.js','v3g.js','v3h.js','v3i.js','v3j.js','v3k.js'))
+v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js','v3f.js','v3g.js','v3h.js','v3i.js','v3j.js','v3k.js','v3l.js'))
 V1,V2='/*V3_BEGIN*/','/*V3_END*/'
 vblock=V1+'\n'+v3+V2+'\n'
 if V1 in s:
@@ -113,5 +113,6 @@ rep("if(op.size===1){elev=clamp(elev+dy*.0025,ELMIN,ELMAX)}","if(op.size===1){ca
 rep("camA=camAT=0;elev=clamp(+j.e||ELDEF,ELMIN,ELMAX)","camA=camAT=+j.a||0;elev=ELDEF")
 rep("camA=camAT=0;elev=d.cam.e;","camA=d.cam.a;camAT=d.cam.at;elev=ELDEF;")
 rep("S.hp-=dmg*1.15;S.iT=.55;","S.hp-=dmg*1.05;S.iT=.75;")
+rep("if(S.poison>0){S.poison-=dt;dmg+=1.3;why='poison'}","if(S.poison>0){S.poison-=dt;dmg+=.65;why='poison'}")
 open(p,'w',encoding='utf-8').write(s)
 print('injected',len(block))

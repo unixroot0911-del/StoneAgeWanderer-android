@@ -1,3 +1,4 @@
+- [x] v3.15 silence texts, poison rework, handbook (done)
 # TASKS
 ## Done in v3 "Hardcore" (commit after 7db0a14)
 Swim/drown (player+animals, depth based), quests/tutorial removed, new cached minimap (explored-only, tap = bigger/close), body temperature in °C + wet/wind/fire/shelter, seasonal temperature curve + day length + hibernation + events (heat/cold waves), slow regrowth (trees 50min, rocks 80min, fauna chunks 25min, bushes by season), 8 crafting stations + 25 recipes + inventory "made from/used in" + sort, sanity + shade stalker + fog + hallucinations, infection.
