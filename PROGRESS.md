@@ -75,3 +75,6 @@
 ## v3.13
 - Main menu now has the live art (v3art mode 'menu', canvas #v3mbg) behind it; boot/loading timings shortened (boot tap after .35s, loading min ~1.1s).
 - Camera: vertical tilt removed (elev fixed ELDEF); horizontal drag rotation + Q/E restored; pinch zoom kept (pinch twist stays off).
+
+## v3.13b
+- Fix: boot tap did nothing on device — v3tick() ran synchronously during script load and could throw (zero-size canvas / NaN gradient), aborting v3j before listeners attached. Now tick is try/catch'd, started at end of file, and tap is bound on boot overlay (pointer/touch/click) plus document capture.

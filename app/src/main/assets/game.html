@@ -7350,17 +7350,19 @@ document.body.appendChild(v3load);
 const V3TIPS=['الجلوس يقلّل ضجيجك — والذئاب تشمّ الريح قبل أن ترى.','الجرح النازف يترك أثراً تتبعه المفترسات. اربطه بسرعة.','الثياب المبللة تسرق دفء جسمك. جفّف نفسك قرب النار.','الشتاء لا يرحم: جهّز الطعام والوقود قبل أن يحلّ.','في الظلام يضعف العقل. ابقَ قرب النار وتجنّب الأماكن المظلمة.','المعدن البارد لا يُطرق — أشعل الحدّادة أولاً.','الحزم توفّر المكان، لكن الوزن الزائد يبطئك.','لا تشرب من الماء الراكد دون تنقية.','ما ترميه لا تلتقطه فوراً، فكّر قبل أن تتخلّى عن شيء.','السلاح الذي تنحته بيديك يحمل شكل أفكارك.','المفترس الذي لم يلحظك يتتبّع أثرك — امسح وجودك بالماء.','النهر العميق يغرق، والجليد في الشتاء يحملك.'];
 const V3ST=['نشعل النار الأولى…','نرسم الجبال…','نوقظ الحيوانات…','نزرع الغابة…','نستعيد ما قطعته…'];
 let v3raf=0,v3mode='boot',v3busy=false,v3bootDone=false;
-function v3size(c){const d=Math.min(window.devicePixelRatio||1,1.5),w=Math.round(innerWidth*d*.6),h=Math.round(innerHeight*d*.6);if(c.width!==w||c.height!==h){c.width=w;c.height=h}}
+function v3size(c){if(innerWidth<2||innerHeight<2)throw 0;const d=Math.min(window.devicePixelRatio||1,1.5),w=Math.round(innerWidth*d*.6),h=Math.round(innerHeight*d*.6);if(c.width!==w||c.height!==h){c.width=w;c.height=h}}
 const v3mbg=document.createElement('canvas');v3mbg.id='v3mbg';document.body.insertBefore(v3mbg,document.body.children[1]||null);
 function v3tick(){
   v3raf=requestAnimationFrame(v3tick);
+  try{v3tick2()}catch(e){}
+}
+function v3tick2(){
   const t=(performance.now()-V3A.t0)/1000;
   if(!v3bootDone){if(!v3boot.hidden){const c=v3boot.querySelector('canvas');v3size(c);v3art(c,c.getContext('2d'),t,'title')}return}
   if(!v3load.hidden){const c=v3load.querySelector('canvas');v3size(c);v3art(c,c.getContext('2d'),t,'load')}
   if(document.body.classList.contains('inmenu')&&v3load.hidden){v3mbg.style.display='block';v3size(v3mbg);v3art(v3mbg,v3mbg.getContext('2d'),t,'menu')}
   else v3mbg.style.display='none';
 }
-v3tick();
 SFX.titleHit=function(){
   O(K0,{d:3,f0:68,f1:34,g:.95,a:.02});N(K0,{d:2.4,f0:180,f1:1400,type:'lowpass',q:.8,g:.35,a:1.6});
   O(K0,{d:5,f0:110,f1:110,type:'sawtooth',lp:520,g:.07,a:1.6});O(K0,{d:5,f0:165,f1:165,type:'sawtooth',lp:600,g:.05,a:2});
@@ -7373,7 +7375,9 @@ function v3bootEnd(){
   setTimeout(()=>{v3boot.hidden=true;v3mode='load'},950);
 }
 const v3t0=performance.now();
-v3boot.addEventListener('pointerdown',e=>{e.preventDefault();if(performance.now()-v3t0>350)v3bootEnd()});
+const v3tap=e=>{if(!v3bootDone&&performance.now()-v3t0>350){try{e.preventDefault()}catch(_){}v3bootEnd()}};
+v3boot.addEventListener('pointerdown',v3tap);v3boot.addEventListener('touchstart',v3tap,{passive:false});v3boot.addEventListener('click',v3tap);
+document.addEventListener('pointerdown',v3tap,true);
 document.addEventListener('keydown',e=>{if(!v3bootDone&&performance.now()-v3t0>350)v3bootEnd()});
 /* ---- loading overlay: shown around the (synchronous) world build ---- */
 {const _lf=loadFinish;loadFinish=function(fn){
@@ -7400,6 +7404,7 @@ document.addEventListener('keydown',e=>{if(!v3bootDone&&performance.now()-v3t0>3
  document.head.appendChild(st);
  const sp=document.getElementById('splash'),upd=()=>document.body.classList.toggle('inmenu',!!sp&&!sp.hidden);
  new MutationObserver(upd).observe(sp,{attributes:true,attributeFilter:['hidden','style','class']});upd();}
+v3tick();
 
 /*V3_END*/
 /* auto fullscreen on first touch/click */
