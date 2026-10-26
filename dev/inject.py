@@ -16,7 +16,7 @@ else:
     s=s.replace(m,block+m)
 
 # ---- V3 block (after FAUNA) ----
-v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js','v3f.js','v3g.js','v3h.js','v3i.js'))
+v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js','v3f.js','v3g.js','v3h.js','v3i.js','v3j.js'))
 V1,V2='/*V3_BEGIN*/','/*V3_END*/'
 vblock=V1+'\n'+v3+V2+'\n'
 if V1 in s:
@@ -88,8 +88,9 @@ patch("    if(wk(wid)==='axe'||wk(wid)==='spear'||wk(wid)==='spear_wood'){\n    
 
 def rep(a,b):
     global s
+    if b in s: return
     if a in s: s=s.replace(a,b)
-    elif b not in s: print('WARN rep miss:',a[:60])
+    else: print('WARN rep miss:',a[:60])
 rep("document.addEventListener('touchmove',e=>{if(e.target.closest&&(e.target.closest('#recs')||e.target.closest('#roster')||e.target.closest('.net-shell')))return;e.preventDefault()},{passive:false});",
     "document.addEventListener('touchmove',e=>{let n=e.target;while(n&&n!==document.body){if(n.nodeType===1&&n.scrollHeight>n.clientHeight+2){const oy=getComputedStyle(n).overflowY;if(oy==='auto'||oy==='scroll')return}n=n.parentNode}e.preventDefault()},{passive:false});")
 s=re.sub(r"(\.panel\{width:min\(100%,780px\);[^\n]*?position:relative;)overflow:hidden\}",r"\1overflow-y:auto;overflow-x:hidden;touch-action:pan-y;-webkit-overflow-scrolling:touch}",s,count=1)
@@ -111,5 +112,6 @@ rep("  const pk=vkey(P.x,P.y),pp=proj(P.x,P.y,0);\n  const bx=worldBox(","  cons
 
 for _ln in ["  const lodR2=(zoomK<1.05||(typeof LITE!=='undefined'&&LITE))?(zoomK<.95?110:190):1e9;\n","if(o.k===0&&lodR2<1e8){const ddx=o.x-P.x,ddy=o.y-P.y;if(ddx*ddx+ddy*ddy>lodR2)continue}"]:
     while _ln+_ln in s: s=s.replace(_ln+_ln,_ln)
+rep("</head><body>","</head><body><div id=\"v3boot\" style=\"position:fixed;inset:0;background:#000;z-index:200\"></div>")
 open(p,'w',encoding='utf-8').write(s)
 print('injected',len(block))

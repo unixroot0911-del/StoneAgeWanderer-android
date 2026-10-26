@@ -68,3 +68,6 @@
 ## v3.11
 - Bigger stacks (STK in inject.py, default 12, kits 3) + dev/v3i.js: bundles (pk_<id>, BUN map, rope cost for wood things, 8 bundles/slot, pack/unpack buttons in #info) and carry weight (WTK kg, capacity 45 +3/extra slot, over-capacity slows via spdMul wrapper, shown in inventory header).
 - inject.py: dedupe of LOD patches (rep isn't idempotent when old text is substring of new).
+
+## v3.12
+- dev/v3j.js: cinematic boot splash (#v3boot, canvas art v3art: moon, ridges, mammoth, fire, wanderer; logo reveal; tap to start + title sting), menu buttons stagger in after tap, loading screen (#v3load) wrapping loadFinish (async w/ paint, min ~2s, tips), gameplay HUD hidden on main menu (body.inmenu). inject.py rep() made idempotent.
