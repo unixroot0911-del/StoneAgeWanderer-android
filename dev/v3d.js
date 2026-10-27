@@ -219,11 +219,11 @@ const STN_ICO=k=>STN[k]?STN[k].kit:'bench_kit';
   }
   return _da.apply(this,arguments);
 }}
-{const _ci=closeInv;closeInv=function(){recStn=null;return _ci.apply(this,arguments)}}
+let stnKeep=null;{const _ci=closeInv;closeInv=function(){if(recStn){stnKeep=recStn;setTimeout(()=>{stnKeep=null},0)}recStn=null;return _ci.apply(this,arguments)}}
 {const _sc=startCraft;startCraft=function(i){
   const r=REC[i];if(!r||!S.alive||P.state!=='live'||job||mg||sleeping)return;
   if(r.st==='hand')return _sc.apply(this,arguments);
-  if(recStn!==r.st){toast('اصنعه عند '+stName(r.st),true);return}
+  if((recStn||stnKeep)!==r.st){toast('اصنعه عند '+stName(r.st),true);return}
   const s=stObj(r.st);if(!s){toast('اقترب من '+stName(r.st),true);return}
   const pr=recProblem(r);if(pr){toast(pr,true);return}
   if(r.bg){

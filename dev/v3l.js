@@ -10,7 +10,7 @@ floatText=function(){};
 objective=function(){return''};
 updChips=function(){};
 stnText=function(){return''};
-{const st=document.createElement('style');st.textContent='#chips,#toasts,#banner,#obj,#bkdmg,#bkthr,.v3l-tip,.v3l-st{display:none!important}#actLbl{display:none!important}';document.head.appendChild(st)}
+{const st=document.createElement('style');st.textContent='#chips,#toasts,#banner,#obj,#bkdmg,#bkthr,.v3l-tip,.v3l-st{display:none!important}#actLbl,#s-warm,#s-energy,#prog>:first-child{display:none!important}';document.head.appendChild(st)}
 {const p=document.querySelector('.v3p');if(p)p.innerHTML='<svg viewBox="0 0 48 48" width="46" height="46" style="display:block;margin:0 auto"><circle cx="24" cy="24" r="21" fill="none" stroke="#f4e3bd" stroke-width="2"/><path d="M19 15 34 24 19 33z" fill="#f4e3bd"/></svg>'}
 if(typeof cwMsg==='function'){const _cm=cwMsg;cwMsg=function(t){if(t)SFX.deny();if(CW)CW.warn=t||''}}
 /* ---- 2) poisoning: slower, but impossible to miss, and curable ---- */
