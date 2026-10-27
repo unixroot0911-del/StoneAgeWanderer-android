@@ -1,3 +1,4 @@
+# v3.19 done: ice + shimmer. Next: clothing slots, difficulty tuning from user feedback
 # v3.18 done: peer wildlife, chest, fishing rod, volume. Next: ice, water shimmer, clothing slots
 # TASKS (priority order) — v3.17 in progress
 1. [ ] Remove body-temperature & sleep mechanics (bars already hidden) -> v3m.js

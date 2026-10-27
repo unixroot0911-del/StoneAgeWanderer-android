@@ -103,3 +103,6 @@
 - MP: wildlife spawn/despawn/AI around every player (mxFarAll/mxNearAny patched into manageEnts via inject rep; peer spawn via swapped P in manageEnts wrapper). Guest keeps own inventory/stats when joining. Death->down state verified with 2 browsers (t31.js).
 - dev/v3n.js: storage chest (chest_kit, plank5+rope2 at bench; struct.box map; modal #cbox; MP sync msg 'cx'; saved with structs), fishing rod (fishing_rod: stick2+rope1+bone1, inventory "ضع" -> mxFishStart: wait job then startMG catch -> raw_fish; needs water within 1.75), volume slider in pause menu (localStorage saw-vol, master.gain), minigame texts hidden.
 - Test: /tmp/claude-0/t32.js. Remaining ideas: ice on lakes, water shimmer, clothing slots, difficulty tuning from user feedback.
+
+## v3.19
+- dev/v3o.js: frozen lakes in winter (iceK ramps in seas 3 from ~day 19.2 of year; wdep wrapper returns 0 when iceK>.7 so you walk on ice; tile overlay via inject rep in drawGround), water shimmer streaks (skipped in LITE). Test t33.js.

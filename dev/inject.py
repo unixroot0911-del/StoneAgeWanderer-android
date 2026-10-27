@@ -16,7 +16,7 @@ else:
     s=s.replace(m,block+m)
 
 # ---- V3 block (after FAUNA) ----
-v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js','v3f.js','v3g.js','v3h.js','v3i.js','v3j.js','v3k.js','v3l.js','v3m.js','v3n.js'))
+v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js','v3f.js','v3g.js','v3h.js','v3i.js','v3j.js','v3k.js','v3l.js','v3m.js','v3n.js','v3o.js'))
 V1,V2='/*V3_BEGIN*/','/*V3_END*/'
 vblock=V1+'\n'+v3+V2+'\n'
 if V1 in s:
@@ -121,5 +121,6 @@ rep("for(let i=ents.length-1;i>=0;i--){\n    const e=ents[i];\n    if(e.gone||(e
 rep("if(dist(e.x,e.y,P.x,P.y)<AI_RANGE)updEnt(e,dt,((entTick+i)&1)===0);","if(mxNearAny(e,AI_RANGE))updEnt(e,dt,((entTick+i)&1)===0);")
 rep("else if(s.kind==='snare'&&s.c)cand(d,{t:'snare'","else if(s.kind==='chest')cand(d,{t:'chest',s:s,lbl:'صندوق',ico:'chest_kit',x:s.x,y:s.y});else if(s.kind==='snare'&&s.c)cand(d,{t:'snare'")
 rep("case'sleep':startSleep();break;","case'sleep':startSleep();break;case'chest':mxChestOpen(c.s);break;")
+rep("      if(tl.w){\n        if(tl.rp){","      if(tl.w){\n        if(iceK>.02){ctx.fillStyle='rgba(205,230,245,'+(iceK*.88).toFixed(2)+')';ctx.fill()}\n        if(!LITE)iceShine(cx,cy,ix0+i,iy0+j);\n        if(tl.rp&&iceK<.5){")
 open(p,'w',encoding='utf-8').write(s)
 print('injected',len(block))
