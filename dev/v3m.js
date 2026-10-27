@@ -167,7 +167,10 @@ function mxEnter(m){
   menuShotClear();aInit();userPaused=false;
   $('pauseMenu').hidden=true;$('savePanel').hidden=true;$('netPanel').hidden=true;$('splash').hidden=true;$('mpx').hidden=true;MX.panel=false;$('roster').hidden=true;Net.rosterOpen=false;
   loadOpen('','');
-  loadAdd(()=>{newGame();if(m)mxApplyWorld(m);mxPlaceNear(hx,hy);MX.inWorld=true},14);
+  const keep=(S.alive&&P.state==='live')?{S:saveClone(S),inv:saveClone(inv)}:null;
+  loadAdd(()=>{newGame();if(m)mxApplyWorld(m);
+    if(keep){const dy=S.day;Object.assign(S,keep.S);S.day=dy;S.alive=true;inv.length=0;keep.inv.forEach(x=>inv.push(x));invDirty=true;P.state='live';P.z=0;P.zv=0}
+    mxPlaceNear(hx,hy);MX.inWorld=true},14);
   loadWorld(hx,hy,18,82);
   loadWait(40,94,'');
   loadFinish();
@@ -340,3 +343,25 @@ setInterval(()=>{
     if(MX.panel)mxRender();
   }catch(e){}
 },1500);
+
+/* ---- wildlife lives around EVERY player, not just the host ---- */
+function mxPeersLive(){const a=[];if(Net.on&&Net.role==='admin')for(const q of Net.peers.values())if(q.seen&&q.st!=='dead')a.push(q);return a}
+function mxFarAll(e){
+  if(Math.hypot(e.x-P.x,e.y-P.y)<=48)return false;
+  for(const q of mxPeersLive())if(Math.hypot(e.x-q.rx,e.y-q.ry)<=48)return false;
+  return true;
+}
+function mxNearAny(e,r){
+  if(Math.hypot(e.x-P.x,e.y-P.y)<r)return true;
+  for(const q of mxPeersLive())if(Math.hypot(e.x-q.rx,e.y-q.ry)<r)return true;
+  return false;
+}
+MX.pSpawnT=0;
+{const _me=manageEnts;manageEnts=function(dt){
+  _me.apply(this,arguments);
+  const ps=mxPeersLive();if(!ps.length)return;
+  MX.pSpawnT-=dt;if(MX.pSpawnT>0)return;MX.pSpawnT=1.2;
+  const sx=P.x,sy=P.y,st=spawnT;
+  MX.spawnOnly=true;
+  try{for(const q of ps){P.x=q.rx;P.y=q.ry;spawnT=0;_me(0)}}finally{P.x=sx;P.y=sy;spawnT=st;MX.spawnOnly=false}
+}}

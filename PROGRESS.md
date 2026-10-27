@@ -98,3 +98,8 @@
   * Wildlife mirror bug fixed (guest recreated every animal each push because nid not copied) + interpolation; guest hits relayed ('H'), host AI targets nearest player and relays damage ('D'); single 20Hz position timer (old code duplicated pushes); no-peer send gating; peer first-sample snap.
   * Removed peer hint texts, #netFeed/#netBar hidden.
   * Tests: /tmp/claude-0/t29.js, t30.js (2 browsers). Known limits: animals only exist within ~48 of the HOST (guests far from host see none); old rtc/code UI still in game.html but unreachable.
+
+## v3.18
+- MP: wildlife spawn/despawn/AI around every player (mxFarAll/mxNearAny patched into manageEnts via inject rep; peer spawn via swapped P in manageEnts wrapper). Guest keeps own inventory/stats when joining. Death->down state verified with 2 browsers (t31.js).
+- dev/v3n.js: storage chest (chest_kit, plank5+rope2 at bench; struct.box map; modal #cbox; MP sync msg 'cx'; saved with structs), fishing rod (fishing_rod: stick2+rope1+bone1, inventory "ضع" -> mxFishStart: wait job then startMG catch -> raw_fish; needs water within 1.75), volume slider in pause menu (localStorage saw-vol, master.gain), minigame texts hidden.
+- Test: /tmp/claude-0/t32.js. Remaining ideas: ice on lakes, water shimmer, clothing slots, difficulty tuning from user feedback.

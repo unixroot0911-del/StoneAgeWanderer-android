@@ -16,7 +16,7 @@ else:
     s=s.replace(m,block+m)
 
 # ---- V3 block (after FAUNA) ----
-v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js','v3f.js','v3g.js','v3h.js','v3i.js','v3j.js','v3k.js','v3l.js','v3m.js'))
+v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js','v3f.js','v3g.js','v3h.js','v3i.js','v3j.js','v3k.js','v3l.js','v3m.js','v3n.js'))
 V1,V2='/*V3_BEGIN*/','/*V3_END*/'
 vblock=V1+'\n'+v3+V2+'\n'
 if V1 in s:
@@ -117,5 +117,9 @@ rep("if(S.poison>0){S.poison-=dt;dmg+=1.3;why='poison'}","if(S.poison>0){S.poiso
 rep("if(c.used<frame-900&&c.alive<=0)chunks.delete(k)","if(c.used<frame-900&&c.alive<=0){wmStash(k,c);chunks.delete(k)}")
 rep("ctx.strokeText('أنقذوه!',base[0],ty-14);ctx.fillStyle='#ffc9c3';ctx.fillText('أنقذوه!',base[0],ty-14);","/*nt1*/")
 rep("ctx.strokeText('♥ '+Math.round(p.hp),base[0],ty-14);ctx.fillStyle='#ffb3ab';ctx.fillText('♥ '+Math.round(p.hp),base[0],ty-14);","/*nt2*/")
+rep("for(let i=ents.length-1;i>=0;i--){\n    const e=ents[i];\n    if(e.gone||(e.dead&&e.dT>170)||(!e.dead&&dist(e.x,e.y,P.x,P.y)>48)){","for(let i=ents.length-1;i>=0&&!MX.spawnOnly;i--){\n    const e=ents[i];\n    if(e.gone||(e.dead&&e.dT>170)||(!e.dead&&mxFarAll(e))){")
+rep("if(dist(e.x,e.y,P.x,P.y)<AI_RANGE)updEnt(e,dt,((entTick+i)&1)===0);","if(mxNearAny(e,AI_RANGE))updEnt(e,dt,((entTick+i)&1)===0);")
+rep("else if(s.kind==='snare'&&s.c)cand(d,{t:'snare'","else if(s.kind==='chest')cand(d,{t:'chest',s:s,lbl:'صندوق',ico:'chest_kit',x:s.x,y:s.y});else if(s.kind==='snare'&&s.c)cand(d,{t:'snare'")
+rep("case'sleep':startSleep();break;","case'sleep':startSleep();break;case'chest':mxChestOpen(c.s);break;")
 open(p,'w',encoding='utf-8').write(s)
 print('injected',len(block))

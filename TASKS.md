@@ -1,3 +1,4 @@
+# v3.18 done: peer wildlife, chest, fishing rod, volume. Next: ice, water shimmer, clothing slots
 # TASKS (priority order) — v3.17 in progress
 1. [ ] Remove body-temperature & sleep mechanics (bars already hidden) -> v3m.js
 2. [ ] Saves: snapshot was ~2MB (all chunks) -> localStorage quota fails on 3rd save. Delta-save only changed objects (WMOD), apply on chunk gen.
