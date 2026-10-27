@@ -1,6 +1,6 @@
 /* ===== V3 (part F): stealth (sit/crawl), animal perception (sight/hearing/smell), danger-feeling bars ===== */
 P.stance=0;
-const STAN_N=['واقف','جالس','زاحف'];
+const STAN_N=['','',''];
 function setStance(n){if(n===P.stance||!S.alive||P.state!=='live'||sleeping)return;if(P.swim&&n>0){toast('لا يمكنك ذلك في الماء العميق',true);return}P.stance=n;stBtnUpd();SFX.ui&&SFX.ui()}
 function cycleStance(){setStance((P.stance+1)%2)}
 const stSpd=()=>[1,.58,.3][P.stance||0];

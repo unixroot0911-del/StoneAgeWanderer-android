@@ -106,3 +106,6 @@
 
 ## v3.19
 - dev/v3o.js: frozen lakes in winter (iceK ramps in seas 3 from ~day 19.2 of year; wdep wrapper returns 0 when iceK>.7 so you walk on ice; tile overlay via inject rep in drawGround), water shimmer streaks (skipped in LITE). Test t33.js.
+
+## v3.20
+- dev/v3p.js: head/feet gear (hide_cap -12% dmg, hide_boots +5% speed & 70% chance to ignore snake poison). Recipes at bench w/ needle. Equipped icons shown under bars (#gearRow, tap to unequip). S.gear saved in S. No on-body drawing yet. Stance label text removed. Test t34.js.
