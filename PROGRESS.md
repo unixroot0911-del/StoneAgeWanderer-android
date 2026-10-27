@@ -88,3 +88,13 @@
 - dev/v3l.js: all on-screen alert/hint text silenced (sound/FX only). Poison reworked: dmg .65/s, green HP toxin segment, screen tint/wobble, retching; cures: antidote full, charcoal -14s (works at full hunger), herb -6s, clean water -3s.
 - Handbook "كتيّب المسافر" via #qbtn: open pages (start, bag, craft w/ known recipes, food, body) + discoverable pages (S.dis flags), chime+glow on unlock.
 - Tested headless (t24.js): no toasts, charcoal cures, book opens. Not verified on device.
+
+## v3.16/v3.17
+- v3.16: station craft bug fixed (closeInv cleared recStn before startCraft; stnKeep in v3d.js). Hidden #s-warm/#s-energy bars + craft label.
+- v3.17 (dev/v3m.js, Srv.java /info):
+  * Temperature & sleep removed (S.bt/energy/warmth forced, startSleep noop).
+  * Saves: snapshot used to be ~2MB (all chunks) -> localStorage quota failed on 3rd slot. Now `wm` delta (WMOD map, applied in getChunk wrapper, stashed on chunk eviction). ~10KB.
+  * MP rebuilt: root bug = guests ran `hi` on OTHER phone's server and became admin there (two admins). Now each phone hosts on own server (ws://127.0.0.1:8787, `hi`), guests `join` remote server. Auto-open room whenever a world is live (toggle in panel, localStorage saw-open). LAN scan fetches http://ip:8787/info over own /24 (Android.ip()). Panel #mpx (main menu button #netBtn, pause menu #mxPauseBtn, roster button). Host sends 'W' (world delta+structs+fires+drops+clock) to joiner / after loading a save; guest does newGame+apply+spawn near host (autosaves own world to slot 3 first).
+  * Wildlife mirror bug fixed (guest recreated every animal each push because nid not copied) + interpolation; guest hits relayed ('H'), host AI targets nearest player and relays damage ('D'); single 20Hz position timer (old code duplicated pushes); no-peer send gating; peer first-sample snap.
+  * Removed peer hint texts, #netFeed/#netBar hidden.
+  * Tests: /tmp/claude-0/t29.js, t30.js (2 browsers). Known limits: animals only exist within ~48 of the HOST (guests far from host see none); old rtc/code UI still in game.html but unreachable.

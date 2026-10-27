@@ -16,7 +16,7 @@ else:
     s=s.replace(m,block+m)
 
 # ---- V3 block (after FAUNA) ----
-v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js','v3f.js','v3g.js','v3h.js','v3i.js','v3j.js','v3k.js','v3l.js'))
+v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js','v3f.js','v3g.js','v3h.js','v3i.js','v3j.js','v3k.js','v3l.js','v3m.js'))
 V1,V2='/*V3_BEGIN*/','/*V3_END*/'
 vblock=V1+'\n'+v3+V2+'\n'
 if V1 in s:
@@ -114,5 +114,8 @@ rep("camA=camAT=0;elev=clamp(+j.e||ELDEF,ELMIN,ELMAX)","camA=camAT=+j.a||0;elev=
 rep("camA=camAT=0;elev=d.cam.e;","camA=d.cam.a;camAT=d.cam.at;elev=ELDEF;")
 rep("S.hp-=dmg*1.15;S.iT=.55;","S.hp-=dmg*1.05;S.iT=.75;")
 rep("if(S.poison>0){S.poison-=dt;dmg+=1.3;why='poison'}","if(S.poison>0){S.poison-=dt;dmg+=.65;why='poison'}")
+rep("if(c.used<frame-900&&c.alive<=0)chunks.delete(k)","if(c.used<frame-900&&c.alive<=0){wmStash(k,c);chunks.delete(k)}")
+rep("ctx.strokeText('أنقذوه!',base[0],ty-14);ctx.fillStyle='#ffc9c3';ctx.fillText('أنقذوه!',base[0],ty-14);","/*nt1*/")
+rep("ctx.strokeText('♥ '+Math.round(p.hp),base[0],ty-14);ctx.fillStyle='#ffb3ab';ctx.fillText('♥ '+Math.round(p.hp),base[0],ty-14);","/*nt2*/")
 open(p,'w',encoding='utf-8').write(s)
 print('injected',len(block))

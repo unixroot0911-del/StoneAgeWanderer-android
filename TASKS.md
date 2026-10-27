@@ -1,3 +1,14 @@
+# TASKS (priority order) — v3.17 in progress
+1. [ ] Remove body-temperature & sleep mechanics (bars already hidden) -> v3m.js
+2. [ ] Saves: snapshot was ~2MB (all chunks) -> localStorage quota fails on 3rd save. Delta-save only changed objects (WMOD), apply on chunk gen.
+3. [ ] Multiplayer rebuild (v3m.js): each phone hosts on its OWN server (127.0.0.1:8787); guests join remote server via {t:'join'} (never 'hi'); old code made guests admins of other phones' servers.
+   - /info endpoint in Srv.java, subnet scan (fetch /info) -> rooms list, no invitation needed (server auto-accepts)
+   - auto-open room when a world is live (toggle in panel), world transfer 'W' to joiners (+ re-push after host loads save)
+   - single timer set (old code duplicated pushes), peer first-sample snap, entity interpolation, no-peer send gating
+   - new panel #mpx (rooms, my room toggle, players, manual IP), button in pause menu + roster
+4. [ ] Remove peer on-canvas hint texts, hide #netFeed
+5. [ ] Tests: two-page playwright t29.js (host/guest world transfer, save, load-then-host), build, ship v3.17
+
 - [x] v3.15 silence texts, poison rework, handbook (done)
 # TASKS
 ## Done in v3 "Hardcore" (commit after 7db0a14)

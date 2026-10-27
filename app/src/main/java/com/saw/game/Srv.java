@@ -23,6 +23,8 @@ class Srv{
       String[] p=req.split(" ");String u=p.length>1?p[1].split("\\?")[0]:"/";
       byte[] body;String ct="text/html; charset=utf-8";int code=200;
       if(u.equals("/ping")){body="saw-lan-ok".getBytes();ct="text/plain";}
+      else if(u.equals("/info")){C a=admin();int n=0;for(C x:cl.values())if(x.role.equals("player")||x.role.equals("admin"))n++;
+        body=("{\"saw\":1,\"open\":"+(a!=null)+",\"host\":\""+(a==null?"":a.name.replace("\\","").replace("\"",""))+"\",\"n\":"+n+"}").getBytes("UTF-8");ct="application/json; charset=utf-8";}
       else if(u.equals("/")||u.equals("/index.html")){body=read(am.open("game.html"));}
       else{body="not found".getBytes();code=404;ct="text/plain";}
       o.write(("HTTP/1.1 "+code+" OK\r\nContent-Type: "+ct+"\r\nContent-Length: "+body.length+"\r\nCache-Control: no-store\r\nAccess-Control-Allow-Origin: *\r\nConnection: close\r\n\r\n").getBytes());
