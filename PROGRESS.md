@@ -121,3 +121,9 @@
 - S.altar random 650-900 from spawn per world; S.tab (read tablets), S.tsites (placed registry), S.altarDone. Tablets (struct kind 'tablet', camp:1 flag exempt from caps) placed once per generated chunk (1.4%, >70 from spawn) via getChunk wrapper; altar struct placed when its chunk generates.
 - Reading a tablet writes a hint into handbook chapter 'tablets' (dyn hbTablets): coarse direction (1-2 read), 8-dir + travel time (3-4), exact distance (5+). Bearing: N = -y.
 - Altar: needs lit torch (S.torchT>0) -> permanent fire, win overlay with custom text, S.won=1. Test t39.js.
+
+## v3.23 — base defense (dev/v3s.js)
+- wall_kit (2 plank+1 rope @bench → x2): wall stake struct, r=.6, hp 70, blocks ground ents (moveEnt wrapper) and player (struct r>0). Hunters in hunt/raid chop walls within 1.35 (9 dmg/1.3s). Single wall is a circle—ents slide around; need lines of walls.
+- spikes_kit (6 stick+1 rope, hand): trap, r=0, hp 14, every .7s hurts non-flying ents within .75 for 8 (1 hp wear).
+- Walls/spikes flagged camp:1 (exempt from struct cap); remote adds (s+) get hp lazily via update wrapper.
+- Test: /tmp/claude-0/t40.js,t41.js. Next: feedback tuning; wall repair; caves/ruins; MP sync of wall hp (not synced).
