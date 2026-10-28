@@ -109,3 +109,10 @@
 
 ## v3.20
 - dev/v3p.js: head/feet gear (hide_cap -12% dmg, hide_boots +5% speed & 70% chance to ignore snake poison). Recipes at bench w/ needle. Equipped icons shown under bars (#gearRow, tap to unequip). S.gear saved in S. No on-body drawing yet. Stance label text removed. Test t34.js.
+
+## v3.21 — hunter tribe + night dread (dev/v3q.js)
+- AN.hunter (hp44), camps ~2.6% of chunks >130 from spawn, stored in S.camps[key]={x,y,left,clr,raid}; fire(camp:1)+2 shelters(camp:1); spawned via populate wrapper (admin/solo only). Respawn 2 hunters 4 days after wipe.
+- AI.hunter modes (e.mode): camp (patrol, role0 sleeps at night), watch (circle 8-13, 6-12s), hunt (melee flank / role1 spear thrower via arrows{enemy:1}), flee (<30% hp), raid (night, torch, approach). Detection radius 22 day/15 night scaled by player speed. hurtEnt on a hunter alerts camp.
+- Raids: night>.6, day>=3, player has lit fire within 14 or torch, camp 50-95 away, 50%/6s check -> 2 raiders spawn 27-29 from player (AI range is 30!) toward camp direction.
+- Sounds: SFX.drum (camp drums at night within 80, faster during raid), hcall, snap (random branch snap at night). Torch lights via netLights wrapper; DR.hunter draws torch at night.
+- Balance: melee 12 dmg/2.5s, spear 11 dmg/5-7.5s. Tests t35-t38.js. Not synced for MP: torch flags (guest computes from night), modes.
