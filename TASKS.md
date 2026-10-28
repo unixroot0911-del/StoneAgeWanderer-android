@@ -1,3 +1,4 @@
+# v3.22 done: tablets+altar goal. Next: feedback tuning; caves/ruins interiors maybe
 # v3.21 done: hunter tribe + night dread. Next: tune from user feedback; maybe caves/ruins, story goal
 # v3.20 done: gear slots. Next: wait for user feedback (difficulty tuning)
 # v3.19 done: ice + shimmer. Next: clothing slots, difficulty tuning from user feedback

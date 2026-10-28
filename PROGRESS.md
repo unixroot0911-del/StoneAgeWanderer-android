@@ -116,3 +116,8 @@
 - Raids: night>.6, day>=3, player has lit fire within 14 or torch, camp 50-95 away, 50%/6s check -> 2 raiders spawn 27-29 from player (AI range is 30!) toward camp direction.
 - Sounds: SFX.drum (camp drums at night within 80, faster during raid), hcall, snap (random branch snap at night). Torch lights via netLights wrapper; DR.hunter draws torch at night.
 - Balance: melee 12 dmg/2.5s, spear 11 dmg/5-7.5s. Tests t35-t38.js. Not synced for MP: torch flags (guest computes from night), modes.
+
+## v3.22 — ancestors' tablets + far altar (dev/v3r.js)
+- S.altar random 650-900 from spawn per world; S.tab (read tablets), S.tsites (placed registry), S.altarDone. Tablets (struct kind 'tablet', camp:1 flag exempt from caps) placed once per generated chunk (1.4%, >70 from spawn) via getChunk wrapper; altar struct placed when its chunk generates.
+- Reading a tablet writes a hint into handbook chapter 'tablets' (dyn hbTablets): coarse direction (1-2 read), 8-dir + travel time (3-4), exact distance (5+). Bearing: N = -y.
+- Altar: needs lit torch (S.torchT>0) -> permanent fire, win overlay with custom text, S.won=1. Test t39.js.
