@@ -138,3 +138,8 @@
 - Darkness: render wrapper (multiply tint + radial gradient; torch/lit fire enlarges light); wake-up blackout 5.5s, speed x0.4 for 5s, heartbeat, drips. dk fades to 0 toward tunnel exit.
 - moveEnt blocks ents with wall+rockw. Removed dup cache cand rep. Test: /tmp/claude-0/t45.js.
 - Note: user says boredom "in all moments" — consider more moment-to-moment loop (events, combat feel).
+
+## v3.27 — audit fixes + ambient events (dev/v3v.js)
+- Audit: bot died to wolves just outside cave exit (safe spawn zone was 38 < tunnel 34+) → inject rep: safe zone 85 / age<420 when S.cave. Recipes audited (all items/icons/sources exist). Save roundtrip with cave OK (~106KB snapshot).
+- Events (S.age>240, every 110–240s, not in cave/sleep): tremor (shake+rumble+falling stones), stampede (deer/boar herd runs past, trample 10 dmg; AI.deer/boar e.stamp), meteors at night; during rain lightning flash + delayed thunder. NOTE: using dist() inside AI wrapper gave wrong values once (unexplained) — avoided.
+- Test: /tmp/claude-0/t49.js.

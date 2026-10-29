@@ -16,7 +16,7 @@ else:
     s=s.replace(m,block+m)
 
 # ---- V3 block (after FAUNA) ----
-v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js','v3f.js','v3g.js','v3h.js','v3i.js','v3j.js','v3k.js','v3l.js','v3m.js','v3n.js','v3o.js','v3p.js','v3q.js','v3r.js','v3s.js','v3t.js','v3u.js'))
+v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js','v3f.js','v3g.js','v3h.js','v3i.js','v3j.js','v3k.js','v3l.js','v3m.js','v3n.js','v3o.js','v3p.js','v3q.js','v3r.js','v3s.js','v3t.js','v3u.js','v3v.js'))
 V1,V2='/*V3_BEGIN*/','/*V3_END*/'
 vblock=V1+'\n'+v3+V2+'\n'
 if V1 in s:
@@ -130,5 +130,6 @@ rep("(c.dyn==='recipes'?hbRecipes():'')","(c.dyn==='recipes'?hbRecipes():c.dyn==
 rep("else if(s.kind==='tablet')cand(d,{t:'tablet'","else if(s.kind==='cache'&&!s.open)cand(d,{t:'cache',s:s,lbl:'تفتيش',ico:'bone',x:s.x,y:s.y});else if(s.kind==='tablet')cand(d,{t:'tablet'")
 rep("case'tablet':mxTablet(c.s);break;","case'tablet':mxTablet(c.s);break;case'cache':cacheOpen(c.s);break;")
 rep("else if(s.kind==='cache'&&!s.open)cand(d,{t:'cache',s:s,lbl:'',ico:'bone',x:s.x,y:s.y});","/*dup*/")
+rep("const safe=S.age<170&&dist(mx,my,S.sx,S.sy)<38;","const safe=S.age<(S.cave?420:170)&&dist(mx,my,S.sx,S.sy)<(S.cave?85:38);")
 open(p,'w',encoding='utf-8').write(s)
 print('injected',len(block))
