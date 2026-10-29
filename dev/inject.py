@@ -16,7 +16,7 @@ else:
     s=s.replace(m,block+m)
 
 # ---- V3 block (after FAUNA) ----
-v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js','v3f.js','v3g.js','v3h.js','v3i.js','v3j.js','v3k.js','v3l.js','v3m.js','v3n.js','v3o.js','v3p.js','v3q.js','v3r.js','v3s.js'))
+v3=''.join(open(os.path.join(root,'dev/'+n),encoding='utf-8').read()+'\n' for n in ('v3a.js','v3b.js','v3c.js','v3d.js','v3e.js','v3f.js','v3g.js','v3h.js','v3i.js','v3j.js','v3k.js','v3l.js','v3m.js','v3n.js','v3o.js','v3p.js','v3q.js','v3r.js','v3s.js','v3t.js'))
 V1,V2='/*V3_BEGIN*/','/*V3_END*/'
 vblock=V1+'\n'+v3+V2+'\n'
 if V1 in s:
@@ -127,5 +127,7 @@ rep("if(structs.length>40)structs.shift();","if(structs.filter(s=>!s.camp).lengt
 rep("else if(s.kind==='chest')cand(d,{t:'chest'","else if(s.kind==='tablet')cand(d,{t:'tablet',s:s,lbl:'لوح',ico:'stone',x:s.x,y:s.y});else if(s.kind==='altar')cand(d,{t:'altar',s:s,lbl:'مذبح',ico:'torch',x:s.x,y:s.y});else if(s.kind==='chest')cand(d,{t:'chest'")
 rep("case'chest':mxChestOpen(c.s);break;","case'chest':mxChestOpen(c.s);break;case'tablet':mxTablet(c.s);break;case'altar':mxAltar(c.s);break;")
 rep("(c.dyn==='recipes'?hbRecipes():'')","(c.dyn==='recipes'?hbRecipes():c.dyn==='tablets'?hbTablets():'')")
+rep("else if(s.kind==='tablet')cand(d,{t:'tablet'","else if(s.kind==='cache'&&!s.open)cand(d,{t:'cache',s:s,lbl:'تفتيش',ico:'bone',x:s.x,y:s.y});else if(s.kind==='tablet')cand(d,{t:'tablet'")
+rep("case'tablet':mxTablet(c.s);break;","case'tablet':mxTablet(c.s);break;case'cache':cacheOpen(c.s);break;")
 open(p,'w',encoding='utf-8').write(s)
 print('injected',len(block))

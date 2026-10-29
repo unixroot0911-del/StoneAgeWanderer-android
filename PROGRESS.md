@@ -128,3 +128,7 @@
 - Walls/spikes flagged camp:1 (exempt from struct cap); remote adds (s+) get hp lazily via update wrapper.
 - Test: /tmp/claude-0/t40.js,t41.js. Next: feedback tuning; wall repair; caves/ruins; MP sync of wall hp (not synced).
 - v3.24: hide cap drawn on player head (v3s.js end).
+
+## v3.25 — ruins/caches (dev/v3t.js)
+- Boredom fix: exploration rewards. struct kind 'cache' (bone pile / cairn / hide bundle), ~4% of chunks >45 from spawn (admin only), S.csites map; interact → loot by distance tier (0<160, 1<420, 2 beyond: bronze/iron gear), +XP, 22% wolf ambush (day>=2). Test /tmp/claude-0/t44.js.
+- Ideas next: guarded caches (hunters), caves, smoke on horizon, more varied events.
