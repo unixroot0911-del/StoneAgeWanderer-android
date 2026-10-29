@@ -28,9 +28,9 @@ function wdHit(s,d){
 {const _me=moveEnt;moveEnt=function(e,dt){
   _me.apply(this,arguments);
   if(e.sp==='butterfly'||e.sp==='fish'||(e.sp==='bird'&&e.st==='fly'))return;
-  for(const s of structs){if(s.kind!=='wall')continue;
+  for(const s of structs){if(s.kind!=='wall'&&s.kind!=='rockw')continue;
     const dx=e.x-s.x,dy=e.y-s.y;if(Math.abs(dx)>2||Math.abs(dy)>2)continue;
-    const d=Math.hypot(dx,dy),R=.6+e.r*.7;if(d<R&&d>1e-4){e.x+=dx/d*(R-d);e.y+=dy/d*(R-d)}}
+    const d=Math.hypot(dx,dy),R=(s.kind==='rockw'?1:.6)+e.r*.7;if(d<R&&d>1e-4){e.x+=dx/d*(R-d);e.y+=dy/d*(R-d)}}
 }}
 /* hunters chop walls; spikes hurt */
 {const _ah=AI.hunter;AI.hunter=function(e,dt){

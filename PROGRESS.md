@@ -132,3 +132,9 @@
 ## v3.25 — ruins/caches (dev/v3t.js)
 - Boredom fix: exploration rewards. struct kind 'cache' (bone pile / cairn / hide bundle), ~4% of chunks >45 from spawn (admin only), S.csites map; interact → loot by distance tier (0<160, 1<420, 2 beyond: bronze/iron gear), +XP, 22% wolf ambush (day>=2). Test /tmp/claude-0/t44.js.
 - Ideas next: guarded caches (hunters), caves, smoke on horizon, more varied events.
+
+## v3.26 — cave start (dev/v3u.js)
+- newGame → caveBuild(): S.cave={x,y,a,L:34}; chamber (ring of 'rockw' boulders r=1, 2 rows) + winding 34-unit tunnel; objs inside hidden (o.hide, cut, cutAt 1e12) via getChunk wrapper caveClear; ents purged from cave; starter drops (sticks, fiber, resin, flint, tinder, stone, bone).
+- Darkness: render wrapper (multiply tint + radial gradient; torch/lit fire enlarges light); wake-up blackout 5.5s, speed x0.4 for 5s, heartbeat, drips. dk fades to 0 toward tunnel exit.
+- moveEnt blocks ents with wall+rockw. Removed dup cache cand rep. Test: /tmp/claude-0/t45.js.
+- Note: user says boredom "in all moments" — consider more moment-to-moment loop (events, combat feel).
