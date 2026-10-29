@@ -130,6 +130,7 @@ rep("(c.dyn==='recipes'?hbRecipes():'')","(c.dyn==='recipes'?hbRecipes():c.dyn==
 rep("else if(s.kind==='tablet')cand(d,{t:'tablet'","else if(s.kind==='cache'&&!s.open)cand(d,{t:'cache',s:s,lbl:'تفتيش',ico:'bone',x:s.x,y:s.y});else if(s.kind==='tablet')cand(d,{t:'tablet'")
 rep("case'tablet':mxTablet(c.s);break;","case'tablet':mxTablet(c.s);break;case'cache':cacheOpen(c.s);break;")
 rep("else if(s.kind==='cache'&&!s.open)cand(d,{t:'cache',s:s,lbl:'',ico:'bone',x:s.x,y:s.y});","/*dup*/")
-rep("const safe=S.age<170&&dist(mx,my,S.sx,S.sy)<38;","const safe=S.age<(S.cave?420:170)&&dist(mx,my,S.sx,S.sy)<(S.cave?85:38);")
+rep("const safe=S.age<170&&dist(mx,my,S.sx,S.sy)<38;","const safe=S.age<(S.cave?420:170)&&dist(mx,my,S.sx,S.sy)<(S.cave?135:38);")
+rep("const safe=S.age<(S.cave?420:170)&&dist(mx,my,S.sx,S.sy)<(S.cave?85:38);","const safe=S.age<(S.cave?420:170)&&dist(mx,my,S.sx,S.sy)<(S.cave?135:38);")
 open(p,'w',encoding='utf-8').write(s)
 print('injected',len(block))

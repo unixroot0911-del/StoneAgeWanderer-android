@@ -143,3 +143,9 @@
 - Audit: bot died to wolves just outside cave exit (safe spawn zone was 38 < tunnel 34+) → inject rep: safe zone 85 / age<420 when S.cave. Recipes audited (all items/icons/sources exist). Save roundtrip with cave OK (~106KB snapshot).
 - Events (S.age>240, every 110–240s, not in cave/sleep): tremor (shake+rumble+falling stones), stampede (deer/boar herd runs past, trample 10 dmg; AI.deer/boar e.stamp), meteors at night; during rain lightning flash + delayed thunder. NOTE: using dist() inside AI wrapper gave wrong values once (unexplained) — avoided.
 - Test: /tmp/claude-0/t49.js.
+
+## v3.28 — realistic cave rewrite (dev/v3u.js replaced)
+- No more boulder structs. Cave = massif (S.cave.m discs) minus carved floor (S.cave.d discs): ~40-node winding main passage (2.1 spacing) + 3 branches ending in chambers (cache loot) + skylight + mouth (last 2 discs outside massif). Stored in S.cave {d,m,deco,ends,mouth,sky,bb,id}.
+- Rendering: drawGround wrapper cvLayer(): offscreen rock face + top (shifted up by CV_WH) + floor pattern; render wrapper cvLight(): darkness mask with destination-out lights (player glow, torch, lit fires, daylight chain from mouth, skylight). Inside → ceiling darkened.
+- Collision: caveBlocked(x,y) = inM && !inD; update/moveEnt wrappers revert axes. Safe spawn zone 135.
+- Verified BFS connectivity (mouth + all branch ends) on 6 seeds. Tests: t51.js (screens), t52.js (connectivity).
