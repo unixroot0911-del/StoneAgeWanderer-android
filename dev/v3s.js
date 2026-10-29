@@ -71,3 +71,15 @@ var WD_T=0;
   }
   ctx.restore();
 }}
+/* hide cap drawn on player head */
+var _inPl=false;
+{const _dp=drawPlayer;drawPlayer=function(){_inPl=true;try{return _dp.apply(this,arguments)}finally{_inPl=false}}}
+{const _dh=drawHead;drawHead=function(h,face,shout,hp){
+  _dh.apply(this,arguments);
+  if(!_inPl||!S.gear||S.gear.head!=='hide_cap')return;
+  ctx.save();ctx.translate(h.x,h.y-hp*3);ctx.lineJoin='round';ctx.lineWidth=2.4;ctx.strokeStyle='#2b180d';
+  ctx.beginPath();ctx.moveTo(-11.5,-1);ctx.quadraticCurveTo(-12,-15,0,-15.5);ctx.quadraticCurveTo(12,-15,11.5,-1);ctx.quadraticCurveTo(0,-5,-11.5,-1);ctx.closePath();
+  ctx.fillStyle='#9a7448';ctx.fill();ctx.stroke();
+  ctx.fillStyle='rgba(60,35,15,.4)';ctx.fillRect(-9,-4,18,1.6);
+  ctx.restore();
+}}

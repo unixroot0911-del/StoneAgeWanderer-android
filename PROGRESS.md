@@ -127,3 +127,4 @@
 - spikes_kit (6 stick+1 rope, hand): trap, r=0, hp 14, every .7s hurts non-flying ents within .75 for 8 (1 hp wear).
 - Walls/spikes flagged camp:1 (exempt from struct cap); remote adds (s+) get hp lazily via update wrapper.
 - Test: /tmp/claude-0/t40.js,t41.js. Next: feedback tuning; wall repair; caves/ruins; MP sync of wall hp (not synced).
+- v3.24: hide cap drawn on player head (v3s.js end).
