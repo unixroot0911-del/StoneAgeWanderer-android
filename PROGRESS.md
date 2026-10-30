@@ -157,3 +157,6 @@
 - Wolf stalking at dusk event (3–4 wolves circle at 14 units ~25s, howls, then attack; flee from torch/fire).
 - Combat: hit-stop (update dt*.08 for 30–100ms), shake, blood burst on kill, red vignette on player hit.
 - Interaction range for structs is 2.4. Test t53.js.
+
+## v3.30 — lightning + scaling
+- v3v: lightning strikes during heavy rain (rain>.5, every 40–90s) 5–14 units from player: flash, thunder, lit fire (fuel 35) at impact (free fire source), 25 dmg if within 1.6. Event interval shrinks with S.day (min ~55s).

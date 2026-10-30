@@ -8758,8 +8758,9 @@ function evMeteors(){
   const rn=typeof rain==='number'?rain:0;
   if(rn>.35){EV.fT-=dt;if(EV.fT<=0){EV.fT=7+Math.random()*18;EV.flash=1;setTimeout(()=>{try{SFX.thunder()}catch(e){}},400+Math.random()*2600)}}
   EV.flash=Math.max(0,EV.flash-dt*2.2);
+  if(rn>.5){EV.sT=(EV.sT===undefined?50:EV.sT)-dt;if(EV.sT<=0){EV.sT=40+Math.random()*50;evStrike()}}
   if(S.age<240)return;
-  EV.t-=dt;if(EV.t>0)return;EV.t=110+Math.random()*130;
+  EV.t-=dt;if(EV.t>0)return;EV.t=Math.max(55,115-S.day*3)+Math.random()*Math.max(60,130-S.day*3);
   const r=Math.random();
   if(night>.3&&night<.9&&r<.5&&typeof evStalk==='function')evStalk();
   else if(night>.75&&r<.4)evMeteors();
@@ -8782,6 +8783,15 @@ function evMeteors(){
     const x=m.x*W,y=m.y*H,g=ctx.createLinearGradient(x,y,x-m.vx*W*.22,y-m.vy*H*.22);g.addColorStop(0,'rgba(255,250,230,'+m.l+')');g.addColorStop(1,'rgba(255,250,230,0)');
     ctx.strokeStyle=g;ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-m.vx*W*.22,y-m.vy*H*.22);ctx.stroke()}
 }}
+
+function evStrike(){
+  const a=Math.random()*6.283,r=5+Math.random()*9,x=P.x+Math.cos(a)*r,y=P.y+Math.sin(a)*r;
+  EV.flash=1.2;shake=Math.max(shake,.7);try{SFX.thunder()}catch(e){}
+  if(waterAt(x,y)!==0)return;
+  if(Math.hypot(x-P.x,y-P.y)<1.6)hitPlayer(25,null,'lightning',0,0);
+  fires.push({isFire:true,x:x,y:y,fuel:35,ph:Math.random()*6.28,cook:[],key:0,smk:0,lit:true,age:0,own:true});
+  for(let i=0;i<14;i++){const b=Math.random()*6.28;emit('puff',x,y,.3,{col:'rgba(255,230,160,.85)',size:5,vx:Math.cos(b)*3,vy:Math.sin(b)*3})}
+}
 
 /* ===== v3w: cave bear, carcass+vultures, wolf stalking, combat juice ===== */
 SFX.snore=function(){N(K0,{d:1.5,f0:210,f1:80,type:'lowpass',g:.22,a:.6});O(K0,{d:1.4,f0:62,f1:48,type:'sine',g:.12,a:.5})};
