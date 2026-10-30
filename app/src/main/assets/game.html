@@ -8458,9 +8458,10 @@ const CLOOT=[
 ];
 function cacheOpen(s){
   if(s.open)return;s.open=1;S.csites=S.csites||{};if(s.cid)S.csites[s.cid]=2;
-  const d=Math.hypot(s.x-S.sx,s.y-S.sy),tier=d<160?0:d<420?1:2,rnd=Math.random;
+  const d=Math.hypot(s.x-S.sx,s.y-S.sy),tier=s.tier!=null?s.tier:(d<160?0:d<420?1:2),rnd=Math.random;
   const T=CLOOT[tier],main=T[0][(rnd()*T[0].length)|0],ex=T[1];
   const give=(it)=>{const id=it[0];if(!IT[id])return;const left=addItem(id,it[1]);if(left>0)dropItem&&dropItem(id,left,s.x,s.y)};
+  if(s.meat){give(['raw_meat',4]);give(['hide',2]);give(['bone',3]);if(rnd()<.3&&IT.fang)give(['fang',1])}
   give(main);for(let i=0;i<2;i++)give(ex[(rnd()*ex.length)|0]);
   if(tier<2&&rnd()<.5)give(T[0][(rnd()*T[0].length)|0]);
   SFX.build&&SFX.build();xpGain&&xpGain(8+tier*6);
@@ -8478,6 +8479,9 @@ function cacheOpen(s){
     ctx.fillStyle='#2b180d';ctx.fillRect(-4,-11,3,4);ctx.fillRect(1,-11,3,4);
   }else if(v===1){ /* cairn */
     const R=[[0,-3,15,8],[-3,-12,11,7],[2,-20,7,5]];for(const r of R){ctx.beginPath();ctx.ellipse(r[0],r[1],r[2],r[3],0,0,TAU);ctx.fillStyle=op?'#6e6a60':'#8f8a7c';ctx.fill();ctx.stroke()}
+  }else if(v===3){ /* ribcage */
+    ctx.lineCap='round';for(let i=-3;i<=3;i++){const x=i*5.2;ctx.beginPath();ctx.moveTo(x,-2);ctx.quadraticCurveTo(x+(i<0?-5:5),-24,x*.55,-30);ctx.lineWidth=5.4;ctx.strokeStyle='#2b180d';ctx.stroke();ctx.lineWidth=3;ctx.strokeStyle=op?'#b9ab90':'#efe3c8';ctx.stroke()}
+    ctx.lineWidth=2.2;ctx.strokeStyle='#2b180d';ctx.beginPath();ctx.ellipse(-22,-5,9,6,0,0,TAU);ctx.fillStyle=op?'#b9ab90':'#efe3c8';ctx.fill();ctx.stroke();ctx.beginPath();ctx.moveTo(14,0);ctx.lineTo(26,-3);ctx.lineTo(22,5);ctx.closePath();ctx.fillStyle=op?'#6b4a2a':'#8a6238';ctx.fill();ctx.stroke();
   }else{ /* hide bundle on stakes */
     ctx.beginPath();ctx.moveTo(-14,0);ctx.lineTo(-12,-30);ctx.moveTo(14,0);ctx.lineTo(12,-30);ctx.lineWidth=4;ctx.strokeStyle='#5a3a1c';ctx.stroke();
     ctx.lineWidth=2.2;ctx.strokeStyle='#2b180d';ctx.beginPath();ctx.moveTo(-13,-30);ctx.lineTo(13,-30);ctx.lineTo(10,-6);ctx.lineTo(-10,-6);ctx.closePath();ctx.fillStyle=op?'#7d6340':'#a68458';ctx.fill();ctx.stroke();
@@ -8602,7 +8606,7 @@ var cvT=0,cvPur=0;
   c.dk+=(d-c.dk)*Math.min(1,dt*2.5);c.inn=(c.inn||0)+((inside?1:0)-(c.inn||0))*Math.min(1,dt*4);
   cvT-=dt;if(cvT<=0&&c.dk>.3){cvT=2.2+Math.random()*4;try{SFX.drip()}catch(e){}}
   if(c.w<1.4&&!c.hb){c.hb=1;try{SFX.heart&&SFX.heart()}catch(e){}}
-  cvPur-=dt;if(cvPur<=0){cvPur=1;for(let i=ents.length-1;i>=0;i--){const e=ents[i];if(e.sp!=='hunter'&&caveIn(e.x,e.y,1))ents.splice(i,1)}}
+  cvPur-=dt;if(cvPur<=0){cvPur=1;for(let i=ents.length-1;i>=0;i--){const e=ents[i];if(e.sp!=='hunter'&&!e.cave&&caveIn(e.x,e.y,1))ents.splice(i,1)}}
 }}
 /* ---------- textures ---------- */
 const CVT={};
@@ -8757,7 +8761,8 @@ function evMeteors(){
   if(S.age<240)return;
   EV.t-=dt;if(EV.t>0)return;EV.t=110+Math.random()*130;
   const r=Math.random();
-  if(night>.75&&r<.4)evMeteors();
+  if(night>.3&&night<.9&&r<.5&&typeof evStalk==='function')evStalk();
+  else if(night>.75&&r<.4)evMeteors();
   else if(r<.4)evTremor();
   else if(night<.5&&r<.8)evStampede();
   else evTremor();
@@ -8776,6 +8781,89 @@ function evMeteors(){
   for(let i=EV.met.length-1;i>=0;i--){const m=EV.met[i];m.x+=m.vx*dt*1.1;m.y+=m.vy*dt*1.1;m.l-=dt*.9;if(m.l<=0){EV.met.splice(i,1);continue}
     const x=m.x*W,y=m.y*H,g=ctx.createLinearGradient(x,y,x-m.vx*W*.22,y-m.vy*H*.22);g.addColorStop(0,'rgba(255,250,230,'+m.l+')');g.addColorStop(1,'rgba(255,250,230,0)');
     ctx.strokeStyle=g;ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-m.vx*W*.22,y-m.vy*H*.22);ctx.stroke()}
+}}
+
+/* ===== v3w: cave bear, carcass+vultures, wolf stalking, combat juice ===== */
+SFX.snore=function(){N(K0,{d:1.5,f0:210,f1:80,type:'lowpass',g:.22,a:.6});O(K0,{d:1.4,f0:62,f1:48,type:'sine',g:.12,a:.5})};
+SFX.caw=function(){const f=560+Math.random()*180;O(K0,{d:.22,f0:f,f1:f*.55,type:'sawtooth',g:.07,a:.01});N(K0,{d:.2,f0:1500,f1:900,type:'bandpass',q:2,g:.05})};
+/* ---- bear sleeping in the cave (spawned lazily; far ents are culled) ---- */
+{const _u0=update;update=function(dt){
+  _u0.apply(this,arguments);
+  const c=S.cave;if(!c||!c.ends||!c.ends[2]||c.bear===2||!S.alive)return;
+  const e=c.ends[2],cb=ents.find(x=>x.cave);
+  if(cb){cb.noticed=1;if(cb.dead){c.bear=2;return}return}
+  if(c.bear===1)c.bear=0;
+  if(Math.hypot(P.x-e[0],P.y-e[1])<40){mkEnt('bear',e[0]-1,e[1],{cave:1,cs:1,noticed:1,sleep:true,hx:e[0],hy:e[1],st:'idle'});c.bear=1;
+    const cs=structs.find(s=>s.cid==='cv2');if(cs)cs.tier=1}
+}}
+{const _a=AI.bear;AI.bear=function(e,dt){
+  if(e.cs){
+    const pd=Math.hypot(e.x-P.x,e.y-P.y),R=P.speed>3.2?11:(P.stance===1?3:6);
+    if(pd>R||!S.alive){halt(e,dt);e.sleep=true;e.st='idle';
+      e.snT=(e.snT||0)-dt;if(e.snT<=0&&pd<18){e.snT=3+Math.random()*2;try{SFX.snore()}catch(x){}}return}
+    e.cs=0;e.sleep=false;e.st='chase';e.stT=16;e.tgt='player';SFX.roar(e);shake=Math.max(shake,.9);return}
+  return _a.apply(this,arguments)}}
+/* ---- carcass with circling vultures ---- */
+function evCarcass(){
+  for(let t=0;t<14;t++){const a=Math.random()*6.283,r=34+Math.random()*16,x=P.x+Math.cos(a)*r,y=P.y+Math.sin(a)*r;
+    if(waterAt(x,y)!==0||!freeSpot(x,y,1.5)||caveIn(x,y,4))continue;
+    structs.push({isStruct:true,kind:'cache',v:3,cid:'cz'+(Math.random()*1e9|0),carc:1,tier:1,meat:1,x:x,y:y,r:.6,key:0,ph:Math.random()*6.28,built:1,items:[],t:0,T:99,c:false,own:false,camp:1});return true}
+  return false}
+{const _u=update;update=function(dt){
+  _u.apply(this,arguments);
+  if(!S.alive||P.state!=='live')return;
+  let near=1e9;
+  for(const s of structs){if(!s.carc||s.open)continue;const d=Math.hypot(s.x-P.x,s.y-P.y);near=Math.min(near,d);
+    if(!s.g&&d<30){s.g=1;const r=Math.random();
+      if(r<.4){for(let i=0;i<2;i++)mkEnt('wolf',s.x+(i?3:-3),s.y+2,{hx:s.x,hy:s.y})}
+      else if(r<.6&&S.day>=3&&AN.sabertooth)mkEnt('sabertooth',s.x+3,s.y-3,{hx:s.x,hy:s.y})}}
+  window.__cawT=(window.__cawT||0)-dt;if(near<55&&window.__cawT<=0){window.__cawT=2.5+Math.random()*3;try{SFX.caw()}catch(e){}}
+  /* far carcass scheduler: piggyback on event timer */
+  window.__crcT=(window.__crcT===undefined?160:window.__crcT)-dt;
+  if(window.__crcT<=0){window.__crcT=240+Math.random()*180;if(S.age>200&&!(S.cave&&S.cave.dk>.3)&&structs.filter(s=>s.carc&&!s.open).length<2)evCarcass()}
+}}
+{const _r=render;render=function(dt){
+  _r.apply(this,arguments);
+  if(S.cave&&S.cave.dk>.3)return;
+  const cp=proj(cam.wx,cam.wy,.9);
+  for(const s of structs){if(!s.carc||s.open)continue;
+    const p=proj(s.x,s.y,0),sx=(p[0]-cp[0])*Z+W/2,sy=(p[1]-cp[1])*Z+H/2;
+    if(sx<-150||sx>W+150||sy<-250||sy>H+150)continue;
+    ctx.setTransform(DPR,0,0,DPR,0,0);ctx.strokeStyle='rgba(18,14,12,.85)';ctx.lineWidth=2.2*Z;ctx.lineCap='round';
+    for(let i=0;i<4;i++){const an=time*.5+i*1.57+s.ph,rx=(58+i*9)*Z,ry=(26+i*4)*Z,x=sx+Math.cos(an)*rx,y=sy-170*Z-i*14*Z+Math.sin(an)*ry,fl=Math.sin(time*3+i)*4*Z;
+      ctx.beginPath();ctx.moveTo(x-10*Z,y+fl);ctx.quadraticCurveTo(x-4*Z,y-5*Z,x,y);ctx.quadraticCurveTo(x+4*Z,y-5*Z,x+10*Z,y+fl);ctx.stroke()}
+  }
+  const WT=[DPR*Z,0,0,DPR*Z,DPR*(W/2-cp[0]*Z),DPR*(H/2-cp[1]*Z)];ctx.setTransform(WT[0],WT[1],WT[2],WT[3],WT[4],WT[5]);
+}}
+/* ---- wolf stalking ---- */
+function evStalk(){
+  const a=Math.random()*6.283,n=3+((Math.random()*2)|0);let lead=null;
+  for(let i=0;i<n;i++){const an=a+i*.5,x=P.x+Math.cos(an)*24,y=P.y+Math.sin(an)*24;if(waterAt(x,y)!==0)continue;
+    const w=mkEnt('wolf',x,y,{noticed:1,stalk:{T:22+Math.random()*8,a:an,dir:Math.random()<.5?1:-1,howl:0}});if(!lead)lead=w;else w.leader=lead}
+  if(lead)try{SFX.howl(lead)}catch(e){}
+}
+{const _a=AI.wolf;AI.wolf=function(e,dt){
+  const s=e.stalk;if(s){
+    s.T-=dt;s.a+=dt*.32*s.dir;
+    if(scary(e.x,e.y,4)||S.torchT>0&&Math.hypot(e.x-P.x,e.y-P.y)<9){e.stalk=null;e.st='flee';e.stT=6;e.thr={x:P.x,y:P.y,d:2};return}
+    if(s.T<=0||e.hp<e.max*.9){e.stalk=null;e.tgt='player';e.st='hunt';e.stT=14;e.sta=1;return}
+    e.sleep=false;steer(e,P.x+Math.cos(s.a)*14,P.y+Math.sin(s.a)*14,3.6,dt,6);e.st='walk';
+    s.howl-=dt;if(s.howl<=0){s.howl=7+Math.random()*6;try{SFX.howl(e)}catch(x){}}
+    return}
+  return _a.apply(this,arguments)}}
+/* ---- combat juice ---- */
+let HS=0;
+{const _he=hurtEnt;hurtEnt=function(e,dmg,src,kx,ky){
+  const hp0=e.hp;_he.apply(this,arguments);
+  if(src==='player'){const kill=e.dead&&hp0>0;HS=Math.max(HS,kill?.1:(dmg>8?.055:.03));shake=Math.max(shake,kill?.6:.22);
+    if(kill)for(let i=0;i<8;i++){const a=Math.random()*6.28;emit('puff',e.x,e.y,.4,{col:'rgba(190,50,45,.8)',size:4,vx:Math.cos(a)*2.4,vy:Math.sin(a)*2.4})}}
+}}
+{const _u3=update;update=function(dt){if(HS>0){HS-=dt;return _u3.call(this,dt*.08)}return _u3.apply(this,arguments)}}
+let HV=0;
+{const _hp=hitPlayer;hitPlayer=function(){const h0=S.hp;const r=_hp.apply(this,arguments);if(S.hp<h0){HV=1;shake=Math.max(shake,.5);HS=Math.max(HS,.05)}return r}}
+{const _r=render;render=function(dt){
+  _r.apply(this,arguments);
+  if(HV>.02){HV=Math.max(0,HV-dt*1.6);ctx.setTransform(DPR,0,0,DPR,0,0);const g=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.3,W/2,H/2,Math.max(W,H)*.75);g.addColorStop(0,'rgba(160,0,0,0)');g.addColorStop(1,'rgba(160,10,10,'+(.55*HV).toFixed(3)+')');ctx.fillStyle=g;ctx.fillRect(0,0,W,H)}
 }}
 
 /*V3_END*/

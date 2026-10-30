@@ -101,7 +101,7 @@ var cvT=0,cvPur=0;
   c.dk+=(d-c.dk)*Math.min(1,dt*2.5);c.inn=(c.inn||0)+((inside?1:0)-(c.inn||0))*Math.min(1,dt*4);
   cvT-=dt;if(cvT<=0&&c.dk>.3){cvT=2.2+Math.random()*4;try{SFX.drip()}catch(e){}}
   if(c.w<1.4&&!c.hb){c.hb=1;try{SFX.heart&&SFX.heart()}catch(e){}}
-  cvPur-=dt;if(cvPur<=0){cvPur=1;for(let i=ents.length-1;i>=0;i--){const e=ents[i];if(e.sp!=='hunter'&&caveIn(e.x,e.y,1))ents.splice(i,1)}}
+  cvPur-=dt;if(cvPur<=0){cvPur=1;for(let i=ents.length-1;i>=0;i--){const e=ents[i];if(e.sp!=='hunter'&&!e.cave&&caveIn(e.x,e.y,1))ents.splice(i,1)}}
 }}
 /* ---------- textures ---------- */
 const CVT={};

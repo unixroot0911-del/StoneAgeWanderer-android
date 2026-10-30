@@ -1,4 +1,4 @@
-# v3.28 done: realistic cave. Next: carcass+vultures, wolf stalking, combat feel, feedback
+# v3.29 done. Next: more variety (rivals, weather hazards), tuning from feedback
 # v3.21 done: hunter tribe + night dread. Next: tune from user feedback; maybe caves/ruins, story goal
 # v3.20 done: gear slots. Next: wait for user feedback (difficulty tuning)
 # v3.19 done: ice + shimmer. Next: clothing slots, difficulty tuning from user feedback

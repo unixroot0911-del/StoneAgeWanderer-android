@@ -149,3 +149,11 @@
 - Rendering: drawGround wrapper cvLayer(): offscreen rock face + top (shifted up by CV_WH) + floor pattern; render wrapper cvLight(): darkness mask with destination-out lights (player glow, torch, lit fires, daylight chain from mouth, skylight). Inside → ceiling darkened.
 - Collision: caveBlocked(x,y) = inM && !inD; update/moveEnt wrappers revert axes. Safe spawn zone 135.
 - Verified BFS connectivity (mouth + all branch ends) on 6 seeds. Tests: t51.js (screens), t52.js (connectivity).
+
+## v3.29 — cave bear, carcass+vultures, wolf stalking, combat juice (dev/v3w.js)
+- KEY FINDING: v3f 'senseEnt' fakes P at +5000 for SENS species (bear/wolf/...) until e.noticed — any custom AI wrapper using P/dist sees a far player. Set e.noticed=1 for custom-AI ents (done for cave bear, stalkers). (Explains the earlier unexplained dist()=7043.)
+- Cave bear sleeps in branch chamber ends[2] (lazy spawn <40 units, culled when far), wakes by noise (run 11, walk 6, crouch 3), snore SFX cue, better cache (tier1) there.
+- Carcass event (cache v=3 ribcage, carc:1, tier1+meat): spawns 34–50 from player every ~4–7 min (max 2), circling vulture silhouettes drawn above, caw SFX within 55; guards spawn on approach (40% 2 wolves, 20% sabertooth day>=3).
+- Wolf stalking at dusk event (3–4 wolves circle at 14 units ~25s, howls, then attack; flee from torch/fire).
+- Combat: hit-stop (update dt*.08 for 30–100ms), shake, blood burst on kill, red vignette on player hit.
+- Interaction range for structs is 2.4. Test t53.js.

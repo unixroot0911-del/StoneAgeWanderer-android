@@ -32,7 +32,8 @@ function evMeteors(){
   if(S.age<240)return;
   EV.t-=dt;if(EV.t>0)return;EV.t=110+Math.random()*130;
   const r=Math.random();
-  if(night>.75&&r<.4)evMeteors();
+  if(night>.3&&night<.9&&r<.5&&typeof evStalk==='function')evStalk();
+  else if(night>.75&&r<.4)evMeteors();
   else if(r<.4)evTremor();
   else if(night<.5&&r<.8)evStampede();
   else evTremor();
